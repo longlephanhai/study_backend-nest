@@ -28,6 +28,10 @@ export class UsersService {
     return newUser;
   }
 
+  async findByEmail(email: string) {
+    return this.userModel.findOne({ email });
+  }
+
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
