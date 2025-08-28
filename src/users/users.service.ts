@@ -32,8 +32,19 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const isExist = await this.userModel.findOne({
+      email: createUserDto.email
+    })
+    if (isExist) {
+      throw new BadRequestException('Email already exists, please use another one.');
+    }
+
+    const hashedPassword = hashPassword(createUserDto.password);
+
+    const newUser = await this.userModel.create({ ...createUserDto, password: hashedPassword });
+
+    return newUser;
   }
 
   findAll() {
