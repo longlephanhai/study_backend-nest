@@ -9,7 +9,7 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) { }
 
   @Post()
-  @ResponseMessage("Create role success")
+  @ResponseMessage("Create role successfully")
   create(@Body() createRoleDto: CreateRoleDto, @User() user: IUser) {
     return this.rolesService.create(createRoleDto, user);
   }
