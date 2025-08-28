@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { FilesModule } from './files/files.module';
+
 
 @Module({
   imports: [
@@ -19,10 +21,12 @@ import { PermissionsModule } from './permissions/permissions.module';
       }),
       inject: [ConfigService],
     }),
+
     UsersModule,
     AuthModule,
     RolesModule,
-    PermissionsModule
+    PermissionsModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService],

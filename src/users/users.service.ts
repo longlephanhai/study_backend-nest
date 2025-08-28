@@ -5,11 +5,14 @@ import { User } from './schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { hashPassword } from 'src/util';
+import { Role } from 'src/roles/schema/role.schema';
 
 @Injectable()
 export class UsersService {
-
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Role.name) private roleModel: Model<Role>
+  ) { }
 
   async registerUser(registerUser: RegisterUserDto) {
 
@@ -23,7 +26,11 @@ export class UsersService {
 
     const hashedPassword = hashPassword(registerUser.password);
 
-    const newUser = await this.userModel.create({ ...registerUser, password: hashedPassword });
+    const userRole = await this.roleModel.findOne({ name: 'NORMAL_USER' });
+
+    const newUser = await this.userModel.create({
+      ...registerUser, password: hashedPassword, role: userRole
+    });
 
     return newUser;
   }
@@ -42,7 +49,11 @@ export class UsersService {
 
     const hashedPassword = hashPassword(createUserDto.password);
 
-    const newUser = await this.userModel.create({ ...createUserDto, password: hashedPassword });
+    const newUser = await this.userModel.create({
+      ...createUserDto,
+      role: createUserDto.role,
+      password: hashedPassword,
+    });
 
     return newUser;
   }

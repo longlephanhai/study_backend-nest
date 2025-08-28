@@ -23,7 +23,7 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: "Role is required" })
   @IsMongoId({ message: 'Role must be a valid MongoDB ObjectId' })
-  role: mongoose.Types.ObjectId;
+  role: mongoose.Schema.Types.ObjectId;
 }
 
 export class RegisterUserDto {
