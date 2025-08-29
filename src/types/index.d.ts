@@ -9,6 +9,7 @@ declare global {
     avatar: string;
     phone: number;
     address: string;
+    role: string;
   }
 }
 
