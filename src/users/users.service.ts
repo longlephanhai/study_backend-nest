@@ -39,7 +39,7 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, user: IUser) {
     const isExist = await this.userModel.findOne({
       email: createUserDto.email
     })
@@ -53,6 +53,10 @@ export class UsersService {
       ...createUserDto,
       role: createUserDto.role,
       password: hashedPassword,
+      createdBy: {
+        _id: user._id,
+        email: user.email
+      }
     });
 
     return newUser;

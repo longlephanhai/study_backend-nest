@@ -1,4 +1,4 @@
-import { IsEmail, IsMongoId, IsNotEmpty } from "class-validator";
+import { IsEmail, IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
 import mongoose from "mongoose";
 
 export class CreateUserDto {
@@ -24,6 +24,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: "Role is required" })
   @IsMongoId({ message: 'Role must be a valid MongoDB ObjectId' })
   role: mongoose.Schema.Types.ObjectId;
+
+  @IsOptional()
+  avatar: string;
 }
 
 export class RegisterUserDto {
@@ -45,4 +48,7 @@ export class RegisterUserDto {
 
   @IsNotEmpty({ message: "Address is required" })
   address: string;
+
+  @IsOptional()
+  avatar: string;
 }
