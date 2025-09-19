@@ -77,7 +77,7 @@ export class UsersService {
       .limit(defaultLimit)
       .sort(sort as any)
       .select('-password')
-      .populate(population)
+      .populate('role')
       .exec();
     return {
       meta: {
