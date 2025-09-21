@@ -26,9 +26,16 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Get('account')
+  @ResponseMessage('User account fetched successfully')
+  getAccount(@Request() req) {
+    return this.authService.getAccount(req.user);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
+
 }

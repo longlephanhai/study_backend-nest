@@ -36,7 +36,7 @@ export class AuthService {
     };
     return {
       access_token: this.jwtService.sign(payload),
-      userInfo: {
+      user: {
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
@@ -47,5 +47,14 @@ export class AuthService {
         phone: user.phone
       }
     };
+  }
+
+  async getAccount(user: any) {
+    const account = await this.usersService.findByEmail(user.email);
+    if (!account) {
+      throw new BadRequestException('User not found');
+    }
+    const { password, ...result } = account.toObject();
+    return result;
   }
 }
