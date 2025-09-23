@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { FilesModule } from './files/files.module';
+import { DatabasesModule } from './databases/databases.module';
 
 
 @Module({
@@ -26,7 +27,8 @@ import { FilesModule } from './files/files.module';
     AuthModule,
     RolesModule,
     PermissionsModule,
-    FilesModule
+    FilesModule,
+    DatabasesModule
   ],
   controllers: [AppController],
   providers: [AppService],

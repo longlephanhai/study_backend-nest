@@ -60,7 +60,7 @@ export class UsersService {
       }
     });
 
-    return newUser;
+    return newUser._id
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
