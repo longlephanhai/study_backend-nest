@@ -9,8 +9,8 @@ export const INIT_PERMISSIONS = [
     "method": "POST",
     "module": "USERS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -25,8 +25,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "USERS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -41,8 +41,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "USERS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -57,8 +57,8 @@ export const INIT_PERMISSIONS = [
     "method": "PATCH",
     "module": "USERS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -73,8 +73,8 @@ export const INIT_PERMISSIONS = [
     "method": "DELETE",
     "module": "USERS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -89,8 +89,8 @@ export const INIT_PERMISSIONS = [
     "method": "POST",
     "module": "FILES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -105,8 +105,8 @@ export const INIT_PERMISSIONS = [
     "method": "POST",
     "module": "PERMISSIONS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -121,8 +121,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "PERMISSIONS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -137,8 +137,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "PERMISSIONS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -153,8 +153,8 @@ export const INIT_PERMISSIONS = [
     "method": "PATCH",
     "module": "PERMISSIONS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -169,8 +169,8 @@ export const INIT_PERMISSIONS = [
     "method": "DELETE",
     "module": "PERMISSIONS",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -185,8 +185,8 @@ export const INIT_PERMISSIONS = [
     "method": "POST",
     "module": "ROLES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -201,8 +201,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "ROLES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -217,8 +217,8 @@ export const INIT_PERMISSIONS = [
     "method": "GET",
     "module": "ROLES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -233,8 +233,8 @@ export const INIT_PERMISSIONS = [
     "method": "PATCH",
     "module": "ROLES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
@@ -249,8 +249,8 @@ export const INIT_PERMISSIONS = [
     "method": "DELETE",
     "module": "ROLES",
     "createdBy": {
-      "_id": "647b5108a8a243e8191855b5",
-      "email": "hoidanit@gmail.com"
+      "_id": "68d2511bf6e8e46b1308d514",
+      "email": "admin@gmail.com"
     },
     "isDeleted": false,
     "deletedAt": null,
