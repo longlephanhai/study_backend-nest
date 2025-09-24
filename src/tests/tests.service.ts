@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,8 +12,21 @@ export class TestsService {
     @InjectModel(Test.name) private testModel: Model<Test>,
   ) { }
 
-  create(createTestDto: CreateTestDto) {
-    return 'This action adds a new test';
+  async create(createTestDto: CreateTestDto, user: IUser) {
+    const isExist = await this.testModel.findOne({
+      title: createTestDto.title,
+    })
+    if (isExist) {
+      throw new BadRequestException('Test with this title is already exist')
+    }
+    const newTest = await this.testModel.create({
+      ...createTestDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      }
+    })
+    return newTest;
   }
 
   findAll() {

@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('tests')
 export class TestsController {
-  constructor(private readonly testsService: TestsService) {}
+  constructor(private readonly testsService: TestsService) { }
 
   @Post()
-  create(@Body() createTestDto: CreateTestDto) {
-    return this.testsService.create(createTestDto);
+  @ResponseMessage('Test created successfully')
+  create(@Body() createTestDto: CreateTestDto, @User() user: IUser) {
+    return this.testsService.create(createTestDto, user);
   }
 
   @Get()

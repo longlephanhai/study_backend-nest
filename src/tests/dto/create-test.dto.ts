@@ -12,7 +12,7 @@ export class CreateTestDto {
   description: string;
 
 
-  @IsNotEmpty({ message: 'Duration is required' })
+  @IsOptional()
   durationSec: number;
 
 
