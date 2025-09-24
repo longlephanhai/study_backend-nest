@@ -12,5 +12,6 @@ import { Part, PartSchema } from './schema/part.schema';
   ],
   controllers: [PartsController],
   providers: [PartsService],
+  exports: [PartsService],
 })
 export class PartsModule { }

@@ -4,12 +4,15 @@ import { UpdateTestDto } from './dto/update-test.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Test } from './schema/test.schema';
 import { Model } from 'mongoose';
+import { Part } from 'src/parts/schema/part.schema';
+import { CreatePartDto } from 'src/parts/dto/create-part.dto';
 
 @Injectable()
 export class TestsService {
 
   constructor(
     @InjectModel(Test.name) private testModel: Model<Test>,
+    @InjectModel(Part.name) private partModel: Model<Part>,
   ) { }
 
   async create(createTestDto: CreateTestDto, user: IUser) {
@@ -48,6 +51,24 @@ export class TestsService {
       }))
     );
     return newTests;
+  }
+
+  async createPart(testId: string, createPartDto: CreatePartDto, user: IUser) {
+    const test = await this.testModel.findOne({ _id: testId });
+    if (!test) {
+      throw new BadRequestException('Test not found');
+    }
+    const newPart = await this.partModel.create({
+      ...createPartDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      }
+    });
+    await this.testModel.findByIdAndUpdate(test._id, {
+      $push: { parts: newPart._id }
+    })
+    return newPart;
   }
 
   findAll() {

@@ -13,11 +13,14 @@ export class Part {
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   durationSec?: number;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 300 })
   orderIndex: number;
+
+  @Prop({ required: true })
+  description?: string;
 
   // Questions
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Question.name }] })

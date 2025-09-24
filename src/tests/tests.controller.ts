@@ -3,6 +3,7 @@ import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
+import { CreatePartDto } from 'src/parts/dto/create-part.dto';
 
 @Controller('tests')
 export class TestsController {
@@ -18,6 +19,12 @@ export class TestsController {
   @ResponseMessage('Tests created successfully')
   createMultiple(@Body() createTestDto: CreateTestDto[], @User() user: IUser) {
     return this.testsService.createMultiple(createTestDto, user);
+  }
+
+  @Post(':id/parts')
+  @ResponseMessage('Part created successfully')
+  createPart(@Param('id') id: string, @Body() createPartDto: CreatePartDto, @User() user: IUser) {
+    return this.testsService.createPart(id, createPartDto, user);
   }
 
   @Get()
