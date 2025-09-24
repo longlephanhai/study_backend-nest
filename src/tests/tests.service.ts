@@ -71,6 +71,37 @@ export class TestsService {
     return newPart;
   }
 
+  async createMultipleParts(testId: string, createPartDto: CreatePartDto[], user: IUser) {
+    const test = await this.testModel.findOne({ _id: testId });
+    if (!test) {
+      throw new BadRequestException('Test not found');
+    }
+
+    const parts = await this.partModel.find({
+      partNo: { $in: createPartDto.map(part => part.partNo) },
+      _id: { $in: test.parts }
+    });
+
+    if (parts.length) {
+      const existPartNos = parts.map(part => part.partNo);
+      throw new BadRequestException(`Parts with these part numbers are already exist in this test: ${existPartNos.join(', ')}`);
+    }
+
+    const newParts = await this.partModel.insertMany(
+      createPartDto.map(part => ({
+        ...part,
+        createdBy: {
+          _id: user._id,
+          email: user.email,
+        }
+      }))
+    );
+    await this.testModel.findByIdAndUpdate(test._id, {
+      $push: { parts: { $each: newParts.map(part => part._id) } }
+    })
+    return newParts;
+  }
+
   findAll() {
     return `This action returns all tests`;
   }

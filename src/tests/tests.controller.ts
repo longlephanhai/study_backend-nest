@@ -27,6 +27,12 @@ export class TestsController {
     return this.testsService.createPart(id, createPartDto, user);
   }
 
+  @Post(':id/parts/multiple')
+  @ResponseMessage('Parts created successfully')
+  createMultipleParts(@Param('id') id: string, @Body() createPartDto: CreatePartDto[], @User() user: IUser) {
+    return this.testsService.createMultipleParts(id, createPartDto, user);
+  }
+
   @Get()
   findAll() {
     return this.testsService.findAll();
