@@ -23,6 +23,10 @@ export class CreateTestDto {
   @IsNotEmpty({ message: 'TotalQuestions is required' })
   totalQuestions: number;
 
+  @IsString({ message: 'AudioUrl must be a string' })
+  @IsNotEmpty({ message: 'AudioUrl is required' })
+  audioUrl: string;
+
   // parts
   @IsOptional()
   @IsMongoId({ each: true, message: "each part must be a mongo object id" })

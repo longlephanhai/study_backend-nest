@@ -22,6 +22,9 @@ export class Test {
   @Prop({ default: 0 })
   totalQuestions: number;
 
+  @Prop({ required: true })
+  audioUrl: string;
+
   // parts
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Part.name }] })
   parts?: mongoose.Schema.Types.ObjectId[];
