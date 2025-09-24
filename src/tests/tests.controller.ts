@@ -14,6 +14,12 @@ export class TestsController {
     return this.testsService.create(createTestDto, user);
   }
 
+  @Post('multiple')
+  @ResponseMessage('Tests created successfully')
+  createMultiple(@Body() createTestDto: CreateTestDto[], @User() user: IUser) {
+    return this.testsService.createMultiple(createTestDto, user);
+  }
+
   @Get()
   findAll() {
     return this.testsService.findAll();

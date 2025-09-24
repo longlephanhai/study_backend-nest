@@ -29,6 +29,27 @@ export class TestsService {
     return newTest;
   }
 
+  async createMultiple(createTestDto: CreateTestDto[], user: IUser) {
+    const titles = createTestDto.map(test => test.title);
+    const isExist = await this.testModel.find({
+      title: { $in: titles }
+    });
+    if (isExist.length) {
+      const existTitles = isExist.map(test => test.title);
+      throw new BadRequestException(`Tests with these titles are already exist: ${existTitles.join(', ')}`);
+    }
+    const newTests = await this.testModel.insertMany(
+      createTestDto.map(test => ({
+        ...test,
+        createdBy: {
+          _id: user._id,
+          email: user.email,
+        }
+      }))
+    );
+    return newTests;
+  }
+
   findAll() {
     return `This action returns all tests`;
   }
