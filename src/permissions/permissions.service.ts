@@ -34,7 +34,7 @@ export class PermissionsService {
     delete filter.current;
     delete filter.pageSize;
     let offset = (+currentPage - 1) * (+limit);
-    let defaultLimit = +limit ? +limit : 10;
+    let defaultLimit = +limit ? +limit : 100;
     const totalItems = (await this.permissionModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 

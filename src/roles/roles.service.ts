@@ -36,7 +36,7 @@ export class RolesService {
     delete filter.current;
     delete filter.pageSize;
     let offset = (+currentPage - 1) * (+limit);
-    let defaultLimit = +limit ? +limit : 10;
+    let defaultLimit = +limit ? +limit : 100;
     const totalItems = (await this.roleModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
@@ -45,7 +45,7 @@ export class RolesService {
       .limit(defaultLimit)
       .sort(sort as any)
       .select('-password')
-      .populate(population)
+      .populate('permissions')
       .exec();
     return {
       meta: {
@@ -62,8 +62,20 @@ export class RolesService {
     return `This action returns a #${id} role`;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: string, updateRoleDto: UpdateRoleDto, user: IUser) {
+    const role = await this.roleModel.findById(id);
+    if (!role) {
+      throw new BadRequestException("Role not found");
+    }
+    const updatedRole = await this.roleModel.findByIdAndUpdate(id, {
+      ...updateRoleDto,
+      updatedBy: {
+        _id: user._id,
+        email: user.email,
+      },
+      updatedAt: new Date(),
+    }, { new: true });
+    return updatedRole;
   }
 
   remove(id: number) {
