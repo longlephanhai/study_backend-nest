@@ -9,6 +9,9 @@ import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { FilesModule } from './files/files.module';
 import { DatabasesModule } from './databases/databases.module';
+import { TestsModule } from './tests/tests.module';
+import { PartsModule } from './parts/parts.module';
+import { QuestionModule } from './question/question.module';
 
 
 @Module({
@@ -28,7 +31,10 @@ import { DatabasesModule } from './databases/databases.module';
     RolesModule,
     PermissionsModule,
     FilesModule,
-    DatabasesModule
+    DatabasesModule,
+    TestsModule,
+    PartsModule,
+    QuestionModule
   ],
   controllers: [AppController],
   providers: [AppService],
