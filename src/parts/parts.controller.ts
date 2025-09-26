@@ -15,6 +15,12 @@ export class PartsController {
     return this.partsService.createQuestion(id, createQuestionDTO, user);
   }
 
+  @Post(':id/questions/multiple')
+  @ResponseMessage('Questions created successfully')
+  createMultipleQuestion(@Param('id') id: string, @Body() createQuestionDTO: CreateQuestionDto[], @User() user: IUser) {
+    return this.partsService.createMultipleQuestions(id, createQuestionDTO, user);
+  }
+
   @Post()
   create(@Body() createPartDto: CreatePartDto) {
     return this.partsService.create(createPartDto);

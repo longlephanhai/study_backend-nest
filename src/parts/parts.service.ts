@@ -37,6 +37,38 @@ export class PartsService {
     return newQuestion;
   }
 
+  async createMultipleQuestions(id: string, createQuestionDTO: CreateQuestionDto[], user: IUser) {
+    const part = await this.partModel.findOne({
+      _id: id,
+    })
+    if (!part) {
+      throw new BadRequestException('Part not found');
+    }
+    const questions = await this.questionModel.find({
+      numberQuestion: { $in: createQuestionDTO.map(q => q.numberQuestion) },
+      _id: { $in: part.questions }
+    })
+
+    if (questions.length) {
+      const existNumbers = questions.map(q => q.numberQuestion);
+      throw new BadRequestException(`Questions with these numbers are already exist: ${existNumbers.join(', ')}`);
+    }
+
+    const newQuestions = await this.questionModel.insertMany(
+      createQuestionDTO.map(q => ({
+        ...q,
+        createdBy: {
+          _id: user._id,
+          email: user.email,
+        }
+      }))
+    )
+    await this.partModel.findByIdAndUpdate(part._id, {
+      $push: { questions: { $each: newQuestions.map(q => q._id) } }
+    })
+    return newQuestions;
+  }
+
   findAll() {
     return `This action returns all parts`;
   }
