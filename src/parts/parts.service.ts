@@ -1,11 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
+import { Part } from './schema/part.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Question } from 'src/question/schema/question.schema';
 
 @Injectable()
 export class PartsService {
+  constructor(
+    @InjectModel(Part.name) private partModel: Model<Part>,
+    @InjectModel(Question.name) private questionModel: Model<Question>,
+  ) { }
   create(createPartDto: CreatePartDto) {
     return 'This action adds a new part';
+  }
+
+  async createQuestion(id: string, createQuestionDTO: CreateQuestionDto, user: IUser) {
+    const part = await this.partModel.findOne({
+      _id: id,
+    })
+    if (!part) {
+      throw new BadRequestException('Part not found');
+    }
+    const newQuestion = await this.questionModel.create({
+      ...createQuestionDTO,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      }
+    })
+    await this.partModel.findByIdAndUpdate(part._id, {
+      $push: { questions: newQuestion._id }
+    })
+    return newQuestion;
   }
 
   findAll() {

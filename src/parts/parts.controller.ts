@@ -2,10 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PartsService } from './parts.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 
 @Controller('parts')
 export class PartsController {
-  constructor(private readonly partsService: PartsService) {}
+  constructor(private readonly partsService: PartsService) { }
+
+  @Post(':id/questions')
+  @ResponseMessage('Question created successfully')
+  createQuestion(@Param('id') id: string, @Body() createQuestionDTO: CreateQuestionDto, @User() user: IUser) {
+    return this.partsService.createQuestion(id, createQuestionDTO, user);
+  }
 
   @Post()
   create(@Body() createPartDto: CreatePartDto) {

@@ -9,8 +9,8 @@ export class Question {
   @Prop({ required: true })
   numberQuestion: number;
 
-  @Prop({ required: true })
-  questionContent: string;
+  @Prop()
+  questionContent?: string;
 
   @Prop({ type: [String], required: true })
   options: string[];
