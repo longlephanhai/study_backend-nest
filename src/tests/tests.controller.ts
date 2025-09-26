@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
@@ -34,8 +34,12 @@ export class TestsController {
   }
 
   @Get()
-  findAll() {
-    return this.testsService.findAll();
+  @ResponseMessage("Get all user with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.testsService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
