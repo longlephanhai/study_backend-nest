@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PartsService } from './parts.service';
 import { CreatePartDto } from './dto/create-part.dto';
 import { UpdatePartDto } from './dto/update-part.dto';
@@ -27,8 +27,12 @@ export class PartsController {
   }
 
   @Get()
-  findAll() {
-    return this.partsService.findAll();
+  @ResponseMessage("Get all parts with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.partsService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')

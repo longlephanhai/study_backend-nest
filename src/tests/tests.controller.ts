@@ -34,7 +34,7 @@ export class TestsController {
   }
 
   @Get()
-  @ResponseMessage("Get all user with pagination")
+  @ResponseMessage("Get all tests with pagination")
   findAll(
     @Query("current") currentPage: string,
     @Query("pageSize") limit: string,
