@@ -117,7 +117,7 @@ export class TestsService {
       .limit(defaultLimit)
       .sort(sort as any)
       .select('-password')
-      .populate('parts')
+      .populate(population)
       .exec();
     return {
       meta: {

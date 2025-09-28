@@ -18,6 +18,9 @@ export class Question {
   @Prop({ required: true })
   correctAnswer: string;
 
+  @Prop({ required: true })
+  category: string; 
+
   @Prop()
   explanation?: string;
 

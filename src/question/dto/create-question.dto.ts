@@ -14,6 +14,9 @@ export class CreateQuestionDto {
   @IsNotEmpty({ message: 'Correct answer is required' })
   correctAnswer: string;
 
+  @IsNotEmpty({ message: 'Category is required' })
+  category: string;
+
   @IsOptional()
   explanation?: string;
 
