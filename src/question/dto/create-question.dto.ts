@@ -25,4 +25,7 @@ export class CreateQuestionDto {
 
   @IsOptional()
   imageUrl?: string;
+
+  @IsOptional()
+  transcript?: string;
 }

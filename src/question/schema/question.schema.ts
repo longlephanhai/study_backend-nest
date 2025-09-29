@@ -19,7 +19,7 @@ export class Question {
   correctAnswer: string;
 
   @Prop({ required: true })
-  category: string; 
+  category: string;
 
   @Prop()
   explanation?: string;
@@ -29,6 +29,9 @@ export class Question {
 
   @Prop()
   imageUrl?: string;
+
+  @Prop()
+  transcript?: string;
 
   @Prop()
   createdAt: Date;
