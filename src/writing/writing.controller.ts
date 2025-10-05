@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { WritingService } from './writing.service';
 import { CreateWritingDto } from './dto/create-writing.dto';
 import { UpdateWritingDto } from './dto/update-writing.dto';
@@ -20,8 +20,12 @@ export class WritingController {
   }
 
   @Get()
-  findAll() {
-    return this.writingService.findAll();
+  @ResponseMessage("Get all writings with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.writingService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
