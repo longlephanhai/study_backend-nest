@@ -33,6 +33,9 @@ export class Question {
   @Prop()
   transcript?: string;
 
+  @Prop({ type: [String] })
+  reading?: string[];
+
   @Prop()
   createdAt: Date;
 

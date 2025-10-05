@@ -12,6 +12,7 @@ import { DatabasesModule } from './databases/databases.module';
 import { TestsModule } from './tests/tests.module';
 import { PartsModule } from './parts/parts.module';
 import { QuestionModule } from './question/question.module';
+import { WritingModule } from './writing/writing.module';
 
 
 @Module({
@@ -34,7 +35,8 @@ import { QuestionModule } from './question/question.module';
     DatabasesModule,
     TestsModule,
     PartsModule,
-    QuestionModule
+    QuestionModule,
+    WritingModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -28,4 +28,7 @@ export class CreateQuestionDto {
 
   @IsOptional()
   transcript?: string;
+
+  @IsOptional()
+  reading?: string[];
 }
