@@ -29,8 +29,9 @@ export class WritingController {
   }
 
   @Get(':id')
+  @ResponseMessage("Get writing successfully")
   findOne(@Param('id') id: string) {
-    return this.writingService.findOne(+id);
+    return this.writingService.findOne(id);
   }
 
   @Patch(':id')

@@ -51,8 +51,8 @@ export class WritingService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} writing`;
+  async findOne(id: string) {
+    return await this.writingModel.findById(id);
   }
 
   update(id: number, updateWritingDto: UpdateWritingDto) {
