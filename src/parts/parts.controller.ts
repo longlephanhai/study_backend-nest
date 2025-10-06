@@ -5,6 +5,10 @@ import { UpdatePartDto } from './dto/update-part.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { CreateQuestionDto } from 'src/question/dto/create-question.dto';
 
+export interface StartTestDTO {
+  partIds: string[];
+}
+
 @Controller('parts')
 export class PartsController {
   constructor(private readonly partsService: PartsService) { }
@@ -33,6 +37,12 @@ export class PartsController {
     @Query("pageSize") limit: string,
     @Query() qs: string) {
     return this.partsService.findAll(+currentPage, +limit, qs);
+  }
+
+  @Post('start')
+  @ResponseMessage("Get all parts to start a test")
+  findAllToStart(@Body() startTestDTO: StartTestDTO) {
+    return this.partsService.findAllToStart(startTestDTO);
   }
 
   @Get(':id')

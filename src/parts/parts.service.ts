@@ -7,12 +7,15 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question } from 'src/question/schema/question.schema';
 import aqp from 'api-query-params';
+import { StartTestDTO } from './parts.controller';
+import { Test } from '@nestjs/testing';
 
 @Injectable()
 export class PartsService {
   constructor(
     @InjectModel(Part.name) private partModel: Model<Part>,
     @InjectModel(Question.name) private questionModel: Model<Question>,
+    @InjectModel(Test.name) private testModel: Model<Test>,
   ) { }
   create(createPartDto: CreatePartDto) {
     return 'This action adds a new part';
@@ -95,6 +98,13 @@ export class PartsService {
       },
       result //kết quả query
     }
+  }
+
+  async findAllToStart(startTestDTO: StartTestDTO) {
+    const parts = await this.partModel.find({
+      _id: { $in: startTestDTO.partIds }
+    }).populate('questions');
+    return parts;
   }
 
   findOne(id: number) {
