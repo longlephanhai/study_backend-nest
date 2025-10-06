@@ -130,8 +130,8 @@ export class TestsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} test`;
+  async findOne(id: string) {
+    return await this.testModel.findById(id).populate('parts','name description questions');
   }
 
   update(id: number, updateTestDto: UpdateTestDto) {

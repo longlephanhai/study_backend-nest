@@ -44,7 +44,7 @@ export class TestsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.testsService.findOne(+id);
+    return this.testsService.findOne(id);
   }
 
   @Patch(':id')
