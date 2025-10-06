@@ -13,6 +13,7 @@ import { TestsModule } from './tests/tests.module';
 import { PartsModule } from './parts/parts.module';
 import { QuestionModule } from './question/question.module';
 import { WritingModule } from './writing/writing.module';
+import { WritingAiModule } from './writing-ai/writing-ai.module';
 
 
 @Module({
@@ -36,7 +37,8 @@ import { WritingModule } from './writing/writing.module';
     TestsModule,
     PartsModule,
     QuestionModule,
-    WritingModule
+    WritingModule,
+    WritingAiModule
   ],
   controllers: [AppController],
   providers: [AppService],
