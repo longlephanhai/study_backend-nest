@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { WritingHistoryService } from './writing-history.service';
 import { CreateWritingHistoryDto } from './dto/create-writing-history.dto';
 import { UpdateWritingHistoryDto } from './dto/update-writing-history.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('writing-history')
 export class WritingHistoryController {
@@ -23,9 +23,15 @@ export class WritingHistoryController {
     return this.writingHistoryService.findAll(+currentPage, +limit, qs);
   }
 
+  @Get('by-user')
+  @ResponseMessage("Get all writing history by userId")
+  findByUserId(@User('id') userId: string) {
+    return this.writingHistoryService.findByUserId(userId);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.writingHistoryService.findOne(+id);
+  findOne(@Param('id') id: string, @User('id') userId: string) {
+    return this.writingHistoryService.findOne(id, userId);
   }
 
   @Patch(':id')

@@ -44,8 +44,12 @@ export class WritingHistoryService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} writingHistory`;
+  async findOne(id: string, userId: string) {
+    return await this.writingHistoryModel.findOne({ _id: id, userId: userId });
+  }
+
+  async findByUserId(userId: string) {
+    return await this.writingHistoryModel.find({ userId: userId });
   }
 
   update(id: number, updateWritingHistoryDto: UpdateWritingHistoryDto) {
