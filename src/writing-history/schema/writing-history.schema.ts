@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { Writing } from 'src/writing/schema/writing.schema';
 
 export type WritingHistoryDocument = HydratedDocument<WritingHistory>;
 
@@ -8,7 +9,7 @@ export class WritingHistory {
   @Prop({ required: true })
   userId: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Writing.name })
   writingId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true })

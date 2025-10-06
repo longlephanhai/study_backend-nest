@@ -49,7 +49,7 @@ export class WritingHistoryService {
   }
 
   async findByUserId(userId: string) {
-    return await this.writingHistoryModel.find({ userId: userId });
+    return await this.writingHistoryModel.find({ userId: userId }).populate('writingId', 'topic title').exec();
   }
 
   update(id: number, updateWritingHistoryDto: UpdateWritingHistoryDto) {
