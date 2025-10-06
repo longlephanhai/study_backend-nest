@@ -14,6 +14,7 @@ import { PartsModule } from './parts/parts.module';
 import { QuestionModule } from './question/question.module';
 import { WritingModule } from './writing/writing.module';
 import { WritingAiModule } from './writing-ai/writing-ai.module';
+import { WritingHistoryModule } from './writing-history/writing-history.module';
 
 
 @Module({
@@ -38,7 +39,8 @@ import { WritingAiModule } from './writing-ai/writing-ai.module';
     PartsModule,
     QuestionModule,
     WritingModule,
-    WritingAiModule
+    WritingAiModule,
+    WritingHistoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

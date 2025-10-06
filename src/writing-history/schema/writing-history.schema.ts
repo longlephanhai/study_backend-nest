@@ -1,30 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type WritingDocument = HydratedDocument<Writing>;
+export type WritingHistoryDocument = HydratedDocument<WritingHistory>;
 
 @Schema({ timestamps: true, })
-export class Writing {
+export class WritingHistory {
   @Prop({ required: true })
-  topic: string;
+  userId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true })
-  title: string;
+  writingId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true })
-  description: string;
+  content: string;
 
-  @Prop({ required: true })
-  minWords: number;
+  @Prop({ type: Object })
+  feedback: WritingFeedback;
 
-  @Prop({ required: true })
-  maxWords: number;
-
-  @Prop({ required: true })
-  level: string;
-
-  @Prop({ required: true })
-  suggestion: string;
+  @Prop({ type: Object })
+  score: any;
 
   @Prop()
   createdAt: Date;
@@ -57,4 +51,4 @@ export class Writing {
   deletedAt: Date;
 }
 
-export const WritingSchema = SchemaFactory.createForClass(Writing);
+export const WritingHistorySchema = SchemaFactory.createForClass(WritingHistory);

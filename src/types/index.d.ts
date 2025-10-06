@@ -19,6 +19,30 @@ declare global {
     maxWords?: number;
     level?: string;
   }
+
+  interface WritingFeedback {
+    overallFeedback: string;
+    grammarErrors: {
+      original: string;
+      correction: string;
+      explanation: string;
+    }[];
+    vocabularySuggestions: {
+      word: string;
+      suggestion: string;
+      reason: string;
+    }[];
+    structureFeedback: string;
+    score: {
+      grammar: number;
+      vocabulary: number;
+      coherence: number;
+      taskResponse: number;
+      overall: number;
+    };
+    improvedVersion?: string;
+  }
+
 }
 
 export { };
