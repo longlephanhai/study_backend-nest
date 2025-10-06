@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { WritingHistoryService } from './writing-history.service';
 import { CreateWritingHistoryDto } from './dto/create-writing-history.dto';
 import { UpdateWritingHistoryDto } from './dto/update-writing-history.dto';
@@ -15,8 +15,12 @@ export class WritingHistoryController {
   }
 
   @Get()
-  findAll() {
-    return this.writingHistoryService.findAll();
+  @ResponseMessage("Get all writing history with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.writingHistoryService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
