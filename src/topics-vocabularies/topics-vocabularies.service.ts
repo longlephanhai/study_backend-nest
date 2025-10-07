@@ -14,6 +14,11 @@ export class TopicsVocabulariesService {
     return 'This action adds a new topicsVocabulary';
   }
 
+  async createMultiple(createTopicsVocabularyDtos: CreateTopicsVocabularyDto[]) {
+    const createdTopicsVocabularies = await this.topicsVocabularyModel.insertMany(createTopicsVocabularyDtos);
+    return createdTopicsVocabularies;
+  }
+
   findAll() {
     return `This action returns all topicsVocabularies`;
   }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TopicsVocabulariesService } from './topics-vocabularies.service';
 import { CreateTopicsVocabularyDto } from './dto/create-topics-vocabulary.dto';
 import { UpdateTopicsVocabularyDto } from './dto/update-topics-vocabulary.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('topics-vocabularies')
 export class TopicsVocabulariesController {
@@ -10,6 +11,12 @@ export class TopicsVocabulariesController {
   @Post()
   create(@Body() createTopicsVocabularyDto: CreateTopicsVocabularyDto) {
     return this.topicsVocabulariesService.create(createTopicsVocabularyDto);
+  }
+
+  @Post('multiple')
+  @ResponseMessage('Multiple topics vocabularies created successfully')
+  createMultiple(@Body() createTopicsVocabularyDtos: CreateTopicsVocabularyDto[]) {
+    return this.topicsVocabulariesService.createMultiple(createTopicsVocabularyDtos);
   }
 
   @Get()
