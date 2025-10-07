@@ -16,6 +16,7 @@ import { WritingModule } from './writing/writing.module';
 import { WritingAiModule } from './writing-ai/writing-ai.module';
 import { WritingHistoryModule } from './writing-history/writing-history.module';
 import { TopicsVocabulariesModule } from './topics-vocabularies/topics-vocabularies.module';
+import { VocabulariesModule } from './vocabularies/vocabularies.module';
 
 
 @Module({
@@ -42,7 +43,8 @@ import { TopicsVocabulariesModule } from './topics-vocabularies/topics-vocabular
     WritingModule,
     WritingAiModule,
     WritingHistoryModule,
-    TopicsVocabulariesModule
+    TopicsVocabulariesModule,
+    VocabulariesModule
   ],
   controllers: [AppController],
   providers: [AppService],

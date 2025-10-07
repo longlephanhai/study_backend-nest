@@ -1,4 +1,5 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
+import { Vocabulary } from "src/vocabularies/schema/vocabulary.schema";
 
 export class CreateTopicsVocabularyDto {
   @IsNotEmpty()
@@ -6,4 +7,7 @@ export class CreateTopicsVocabularyDto {
 
   @IsNotEmpty()
   description: string;
+
+  @IsOptional()
+  vocabularies: Vocabulary[];
 }

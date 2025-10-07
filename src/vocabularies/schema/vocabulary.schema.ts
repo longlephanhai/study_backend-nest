@@ -1,21 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Vocabulary } from 'src/vocabularies/schema/vocabulary.schema';
 
 
-export type TopicsVocabularyDocument = HydratedDocument<TopicsVocabulary>;
+export type VocabularyDocument = HydratedDocument<Vocabulary>;
 
 @Schema({ timestamps: true, })
-export class TopicsVocabulary {
+export class Vocabulary {
 
   @Prop({ required: true })
-  topic: string;
+  vocab: string;
 
   @Prop({ required: true })
-  description: string;
+  meaning: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Vocabulary.name }] })
-  vocabularies: Vocabulary[];
+  @Prop({ required: true })
+  example: string;
+
+  @Prop({ required: true })
+  level: string;
+
+  @Prop({ required: true })
+  pronounce: string;
+
+  @Prop({ required: true })
+  img: string;
 
   @Prop()
   createdAt: Date;
@@ -48,4 +56,4 @@ export class TopicsVocabulary {
   deletedAt: Date;
 }
 
-export const TopicsVocabularySchema = SchemaFactory.createForClass(TopicsVocabulary);
+export const VocabularySchema = SchemaFactory.createForClass(Vocabulary);
