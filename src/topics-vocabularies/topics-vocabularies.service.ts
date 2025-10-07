@@ -4,6 +4,7 @@ import { UpdateTopicsVocabularyDto } from './dto/update-topics-vocabulary.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { TopicsVocabulary } from './schema/topics-vocabulary.schema';
 import { Model } from 'mongoose';
+import aqp from 'api-query-params';
 
 @Injectable()
 export class TopicsVocabulariesService {
@@ -19,8 +20,31 @@ export class TopicsVocabulariesService {
     return createdTopicsVocabularies;
   }
 
-  findAll() {
-    return `This action returns all topicsVocabularies`;
+  async findAll(currentPage: number, limit: number, qs: string) {
+    const { filter, sort, population } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+    let offset = (+currentPage - 1) * (+limit);
+    let defaultLimit = +limit ? +limit : 20;
+    const totalItems = (await this.topicsVocabularyModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+    const result = await this.topicsVocabularyModel.find(filter)
+      .skip(offset)
+      .limit(defaultLimit)
+      .sort(sort as any)
+      .select('-password')
+      .populate(population)
+      .exec();
+    return {
+      meta: {
+        current: currentPage, //trang hiện tại
+        pageSize: limit, //số lượng bản ghi đã lấy
+        pages: totalPages,  //tổng số trang với điều kiện query
+        total: totalItems // tổng số phần tử (số bản ghi)
+      },
+      result //kết quả query
+    }
   }
 
   findOne(id: number) {

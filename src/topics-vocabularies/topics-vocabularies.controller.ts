@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TopicsVocabulariesService } from './topics-vocabularies.service';
 import { CreateTopicsVocabularyDto } from './dto/create-topics-vocabulary.dto';
 import { UpdateTopicsVocabularyDto } from './dto/update-topics-vocabulary.dto';
@@ -20,8 +20,12 @@ export class TopicsVocabulariesController {
   }
 
   @Get()
-  findAll() {
-    return this.topicsVocabulariesService.findAll();
+  @ResponseMessage("Get all topics vocabularies with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.topicsVocabulariesService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
