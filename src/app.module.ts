@@ -19,6 +19,7 @@ import { TopicsVocabulariesModule } from './topics-vocabularies/topics-vocabular
 import { VocabulariesModule } from './vocabularies/vocabularies.module';
 import { SpeakingAiModule } from './speaking-ai/speaking-ai.module';
 import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
+import { ExamResultModule } from './exam-result/exam-result.module';
 
 
 @Module({
@@ -48,7 +49,8 @@ import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
     TopicsVocabulariesModule,
     VocabulariesModule,
     SpeakingAiModule,
-    TopicsSpeakingModule
+    TopicsSpeakingModule,
+    ExamResultModule
   ],
   controllers: [AppController],
   providers: [AppService],
