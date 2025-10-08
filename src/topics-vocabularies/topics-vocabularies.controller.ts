@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { TopicsVocabulariesService } from './topics-vocabularies.service';
 import { CreateTopicsVocabularyDto } from './dto/create-topics-vocabulary.dto';
 import { UpdateTopicsVocabularyDto } from './dto/update-topics-vocabulary.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { CreateVocabularyDto } from 'src/vocabularies/dto/create-vocabulary.dto';
 
 @Controller('topics-vocabularies')
 export class TopicsVocabulariesController {
@@ -17,6 +18,12 @@ export class TopicsVocabulariesController {
   @ResponseMessage('Multiple topics vocabularies created successfully')
   createMultiple(@Body() createTopicsVocabularyDtos: CreateTopicsVocabularyDto[]) {
     return this.topicsVocabulariesService.createMultiple(createTopicsVocabularyDtos);
+  }
+
+  @Post(':id/vocabularies/multiple')
+  @ResponseMessage('Part created successfully')
+  createPart(@Param('id') id: string, @Body() createVocabularyDto: CreateVocabularyDto[], @User() user: IUser) {
+    return this.topicsVocabulariesService.createMultipleVocabulary(id, createVocabularyDto, user);
   }
 
   @Get()
