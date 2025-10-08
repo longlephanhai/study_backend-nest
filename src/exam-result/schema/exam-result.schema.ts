@@ -36,6 +36,15 @@ export class ExamResult {
   noAnswer: mongoose.Schema.Types.ObjectId[];
 
   @Prop()
+  totalScore: number;
+
+  @Prop()
+  readingScore: number;
+
+  @Prop()
+  listeningScore: number;
+
+  @Prop()
   createdAt: Date;
 
   @Prop()

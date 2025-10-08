@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ExamResult } from './schema/exam-result.schema';
 import mongoose, { Model } from 'mongoose';
 import { Question } from 'src/question/schema/question.schema';
+import { listeningScoreMap, readingScoreMap } from 'src/util';
 
 @Injectable()
 export class ExamResultService {
@@ -18,6 +19,9 @@ export class ExamResultService {
   async create(createExamResultDto: CreateExamResultDto, user: IUser) {
     const createdExamResult = new this.examResultModel({
       ...createExamResultDto,
+      totalScore: listeningScoreMap[createExamResultDto.totalListeningCorrect] + readingScoreMap[createExamResultDto.totalReadingCorrect],
+      listeningScore: listeningScoreMap[createExamResultDto.totalListeningCorrect],
+      readingScore: readingScoreMap[createExamResultDto.totalReadingCorrect],
       userId: user._id,
     });
     return createdExamResult.save();
@@ -49,6 +53,8 @@ export class ExamResultService {
     const wrongAnswer = await getQuestionsData(examResult.wrongAnswer);
     const noAnswer = await getQuestionsData(examResult.noAnswer);
 
+
+
     return {
       totalCorrect: examResult.totalCorrect,
       totalListeningCorrect: examResult.totalListeningCorrect,
@@ -57,6 +63,9 @@ export class ExamResultService {
       correctAnswer,
       wrongAnswer,
       noAnswer,
+      totalScore: examResult.totalScore,
+      readingScore: examResult.readingScore,
+      listeningScore: examResult.listeningScore,
     };
   }
 
