@@ -20,8 +20,8 @@ export class ExamResultController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.examResultService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: IUser) {
+    return this.examResultService.findOne(id, user);
   }
 
   @Patch(':id')

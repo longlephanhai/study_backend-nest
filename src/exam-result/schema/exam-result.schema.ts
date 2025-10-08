@@ -26,14 +26,14 @@ export class ExamResult {
   @Prop({ required: true })
   parts: Part[];
 
-  @Prop({ type: Object, default: {} })
-  correctAnswer: Record<string, number>;
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Question.name, default: [] })
+  correctAnswer: mongoose.Schema.Types.ObjectId[];
 
-  @Prop({ type: Object, default: {} })
-  wrongAnswer: Record<string, number>;
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Question.name, default: [] })
+  wrongAnswer: mongoose.Schema.Types.ObjectId[];
 
-  @Prop({ type: Object, default: {} })
-  noAnswer: Record<string, number>;
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Question.name, default: [] })
+  noAnswer: mongoose.Schema.Types.ObjectId[];
 
   @Prop()
   createdAt: Date;

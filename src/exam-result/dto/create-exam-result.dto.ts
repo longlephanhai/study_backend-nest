@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
 import mongoose from "mongoose";
 import { Part } from "src/parts/schema/part.schema";
+import { Question } from "src/question/schema/question.schema";
 
 export class CreateExamResultDto {
   @IsNotEmpty()
@@ -19,11 +20,11 @@ export class CreateExamResultDto {
   parts: Part[];
 
   @IsOptional()
-  correctAnswer: Record<string, number>;
+  correctAnswer?: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
-  wrongAnswer: Record<string, number>;
+  wrongAnswer?: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
-  noAnswer: Record<string, number>;
+  noAnswer?: mongoose.Schema.Types.ObjectId[];
 }
