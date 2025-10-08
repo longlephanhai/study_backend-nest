@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -70,7 +70,6 @@ Guidelines:
 
     const rawText = result.response.text();
 
-    // 👇 Làm sạch text để tránh lỗi JSON (nếu AI trả về text kèm mô tả)
     const jsonStart = rawText.indexOf("{");
     const jsonEnd = rawText.lastIndexOf("}");
     const jsonString =

@@ -20,6 +20,7 @@ import { VocabulariesModule } from './vocabularies/vocabularies.module';
 import { SpeakingAiModule } from './speaking-ai/speaking-ai.module';
 import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
 import { ExamResultModule } from './exam-result/exam-result.module';
+import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
 
 
 @Module({
@@ -50,7 +51,8 @@ import { ExamResultModule } from './exam-result/exam-result.module';
     VocabulariesModule,
     SpeakingAiModule,
     TopicsSpeakingModule,
-    ExamResultModule
+    ExamResultModule,
+    Part5MistakesModule
   ],
   controllers: [AppController],
   providers: [AppService],
