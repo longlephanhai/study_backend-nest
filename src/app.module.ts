@@ -17,6 +17,8 @@ import { WritingAiModule } from './writing-ai/writing-ai.module';
 import { WritingHistoryModule } from './writing-history/writing-history.module';
 import { TopicsVocabulariesModule } from './topics-vocabularies/topics-vocabularies.module';
 import { VocabulariesModule } from './vocabularies/vocabularies.module';
+import { SpeakingAiModule } from './speaking-ai/speaking-ai.module';
+import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
 
 
 @Module({
@@ -44,7 +46,9 @@ import { VocabulariesModule } from './vocabularies/vocabularies.module';
     WritingAiModule,
     WritingHistoryModule,
     TopicsVocabulariesModule,
-    VocabulariesModule
+    VocabulariesModule,
+    SpeakingAiModule,
+    TopicsSpeakingModule
   ],
   controllers: [AppController],
   providers: [AppService],
