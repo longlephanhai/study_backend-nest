@@ -69,6 +69,10 @@ export class ExamResultService {
     };
   }
 
+  async getHistoryExamResults(user: IUser) {
+    return this.examResultModel.find({ userId: user._id }).select('totalScore readingScore listeningScore totalCorrect totalListeningCorrect totalReadingCorrect parts createdAt').sort({ createdAt: -1 });
+  }
+
 
   update(id: number, updateExamResultDto: UpdateExamResultDto) {
     return `This action updates a #${id} examResult`;
