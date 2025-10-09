@@ -31,6 +31,12 @@ export class ExamResultController {
     return this.examResultService.getHistoryExamResults(user);
   }
 
+  @Get('user/predict')
+  @ResponseMessage('Get exam results predicted for a user successfully')
+  getPredictedExamResults(@User() user: IUser) {
+    return this.examResultService.getPredictedExamResults(user);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateExamResultDto: UpdateExamResultDto) {
     return this.examResultService.update(+id, updateExamResultDto);

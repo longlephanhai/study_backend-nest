@@ -33,6 +33,7 @@ export class AuthService {
       email: user.email,
       sub: user._id,
       role: user.role,
+      targetScore: user.targetScore,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -44,7 +45,8 @@ export class AuthService {
         age: user.age,
         avatar: user.avatar,
         address: user.address,
-        phone: user.phone
+        phone: user.phone,
+        targetScore: user.targetScore,
       }
     };
   }

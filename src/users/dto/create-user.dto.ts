@@ -27,6 +27,9 @@ export class CreateUserDto {
 
   @IsOptional()
   avatar: string;
+
+  @IsOptional()
+  targetScore: number;
 }
 
 export class RegisterUserDto {
@@ -51,4 +54,7 @@ export class RegisterUserDto {
 
   @IsOptional()
   avatar: string;
+
+  @IsOptional()
+  targetScore: number;
 }

@@ -31,6 +31,8 @@ export class User {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Role.name })
   role: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ default: 500 })
+  targetScore: number;
 
   @Prop()
   createdAt: Date;

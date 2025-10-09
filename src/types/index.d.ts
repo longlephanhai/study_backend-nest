@@ -8,6 +8,7 @@ declare global {
     phone: number;
     address: string;
     role: string;
+    targetScore: number;
   }
 
   interface PromptDto {
