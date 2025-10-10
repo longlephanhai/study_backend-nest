@@ -37,7 +37,7 @@ export class TopicsVocabulariesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.topicsVocabulariesService.findOne(+id);
+    return this.topicsVocabulariesService.findOne(id);
   }
 
   @Patch(':id')

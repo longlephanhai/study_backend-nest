@@ -81,8 +81,8 @@ export class TopicsVocabulariesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} topicsVocabulary`;
+  async findOne(id: string) {
+    return await this.topicsVocabularyModel.findById(id).populate('vocabularies').exec();
   }
 
   update(id: number, updateTopicsVocabularyDto: UpdateTopicsVocabularyDto) {
