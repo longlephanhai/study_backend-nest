@@ -35,6 +35,12 @@ export class TopicsVocabulariesController {
     return this.topicsVocabulariesService.findAll(+currentPage, +limit, qs);
   }
 
+  @Get('ai-review/:id')
+  @ResponseMessage("Create questions for AI review")
+  getVocabulariesForAiReview(@Param('id') id: string) {
+    return this.topicsVocabulariesService.getVocabulariesFromAI(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.topicsVocabulariesService.findOne(id);

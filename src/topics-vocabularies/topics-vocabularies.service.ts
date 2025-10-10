@@ -5,16 +5,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { TopicsVocabulary } from './schema/topics-vocabulary.schema';
 import { Model } from 'mongoose';
 import aqp from 'api-query-params';
-import { BadRequestError } from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { CreateVocabularyDto } from 'src/vocabularies/dto/create-vocabulary.dto';
 import { Vocabulary } from 'src/vocabularies/schema/vocabulary.schema';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class TopicsVocabulariesService {
+  private genAI: GoogleGenerativeAI;
+  private genAiProModel: any;
+  private readonly batchSize = 5;
   constructor(
     @InjectModel(TopicsVocabulary.name) private topicsVocabularyModel: Model<TopicsVocabulary>,
     @InjectModel(Vocabulary.name) private vocabularyModel: Model<Vocabulary>,
-  ) { }
+    private configService: ConfigService
+  ) {
+    this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
+    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+  }
   create(createTopicsVocabularyDto: CreateTopicsVocabularyDto) {
     return 'This action adds a new topicsVocabulary';
   }
@@ -84,6 +92,60 @@ export class TopicsVocabulariesService {
   async findOne(id: string) {
     return await this.topicsVocabularyModel.findById(id).populate('vocabularies').exec();
   }
+
+  async getVocabulariesFromAI(id: string, maxWords = 20) {
+    const topicsVocabulary = await this.topicsVocabularyModel.findById(id).populate('vocabularies').exec();
+    if (!topicsVocabulary) {
+      throw new BadRequestException('TopicsVocabulary not found');
+    }
+
+    const vocabularies = topicsVocabulary.vocabularies as Vocabulary[];
+    if (!vocabularies.length) return [];
+
+    const limitedVocab = vocabularies.slice(0, maxWords);
+
+    const prompt = `
+Bạn là trợ lý luyện TOEIC thông minh. Hãy giúp người học ôn tập các từ sau:
+${limitedVocab.map(v => `- ${v.vocab} (${v.meaning}): ${v.example}`).join('\n')}
+
+Sinh cho từng từ dạng bài tập:
+Điền vào chỗ trống (blank) trong câu. Trả về JSON có cấu trúc:
+[
+  {
+    "word": "desk",
+    "fillBlank": {
+      "question": "...", 
+      "answer": "..."
+    }
+  }
+]
+
+Chỉ trả JSON, không thêm text khác.
+`;
+
+    try {
+      const result = await this.genAiProModel.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      });
+
+      const rawText = result.response.text();
+      const jsonStart = rawText.indexOf('[');
+      const jsonEnd = rawText.lastIndexOf(']');
+      const jsonString = jsonStart !== -1 && jsonEnd !== -1 ? rawText.slice(jsonStart, jsonEnd + 1) : rawText;
+
+      try {
+        return JSON.parse(jsonString);
+      } catch {
+        console.warn('⚠️ AI output not valid JSON, returning raw text.');
+        return [{ rawText }];
+      }
+    } catch (error) {
+      console.error('❌ Error calling Gemini AI:', error);
+      return [{ rawText: 'Error calling AI, please try again later.' }];
+    }
+  }
+
+
 
   update(id: number, updateTopicsVocabularyDto: UpdateTopicsVocabularyDto) {
     return `This action updates a #${id} topicsVocabulary`;
