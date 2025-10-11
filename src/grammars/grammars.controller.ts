@@ -22,6 +22,12 @@ export class GrammarsController {
     return this.grammarsService.findAll(+currentPage, +limit, qs);
   }
 
+  @Get('questions-ai/:id')
+  @ResponseMessage("Get grammar questions by AI")
+  findQuestionsByAI(@Param('id') id: string) {
+    return this.grammarsService.findQuestionsByAI(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.grammarsService.findOne(+id);
