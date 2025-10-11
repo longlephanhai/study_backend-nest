@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { GrammarsService } from './grammars.service';
 import { CreateGrammarDto } from './dto/create-grammar.dto';
 import { UpdateGrammarDto } from './dto/update-grammar.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('grammars')
 export class GrammarsController {
-  constructor(private readonly grammarsService: GrammarsService) {}
+  constructor(private readonly grammarsService: GrammarsService) { }
 
   @Post()
   create(@Body() createGrammarDto: CreateGrammarDto) {
@@ -13,8 +14,12 @@ export class GrammarsController {
   }
 
   @Get()
-  findAll() {
-    return this.grammarsService.findAll();
+  @ResponseMessage("Get all grammars with pagination")
+  findAll(
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
+    @Query() qs: string) {
+    return this.grammarsService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
