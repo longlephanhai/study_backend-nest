@@ -123,46 +123,54 @@ export class ExamResultService {
     part4_correct: number,
     part5_correct: number,
     part6_correct: number,
-    part7_correct: number
+    part7_correct: number,
+    totalExams: number
   ) {
     const prompt = `
 Bạn là chuyên gia luyện thi TOEIC.
 
+Dưới đây là dữ liệu tổng hợp (tích lũy) về kết quả luyện thi của người học:
+
 Thông tin người học:
 - 🎯 Điểm mục tiêu: ${targetScore}
-- 📊 Điểm dự đoán: ${predictedScores}
+- 📊 Điểm dự đoán hiện tại: ${predictedScores}
+- 🧮 Tổng số bài thi đã thực hiện: ${totalExams}
 
-Kết quả số câu đúng:
-Part 1: ${part1_correct}
-Part 2: ${part2_correct}
-Part 3: ${part3_correct}
-Part 4: ${part4_correct}
-Part 5: ${part5_correct}
-Part 6: ${part6_correct}
-Part 7: ${part7_correct}
+Kết quả tổng số câu đúng (tích lũy):
+- Part 1: ${part1_correct} / ${totalExams} lần thi
+- Part 2: ${part2_correct} / ${totalExams} lần thi
+- Part 3: ${part3_correct} / ${totalExams} lần thi
+- Part 4: ${part4_correct} / ${totalExams} lần thi
+- Part 5: ${part5_correct} / ${totalExams} lần thi
+- Part 6: ${part6_correct} / ${totalExams} lần thi
+- Part 7: ${part7_correct} / ${totalExams} lần thi
 
-Hãy phân tích và đưa ra lời khuyên cá nhân hóa theo yêu cầu sau:
+Yêu cầu:
+Phân tích kết quả và đưa ra lời khuyên học tập **cá nhân hóa**, tuân thủ đúng định dạng JSON sau:
 
-1. **Đánh giá tổng quan**: So sánh điểm dự đoán với mục tiêu, nhận xét mức độ chênh lệch.
-2. **Phân tích điểm yếu**: Nêu rõ các phần thi hoặc kỹ năng yếu (nghe, đọc, ngữ pháp, từ vựng...).
-3. **Lời khuyên cải thiện**: Đưa ra hướng học tập cụ thể, dễ hiểu, khả thi (thời lượng, dạng bài nên luyện...).
-4. **Kế hoạch học tập**: Gợi ý kế hoạch trong 2–4 tuần, giúp tiến gần mục tiêu.
-5. **Ví dụ minh họa**: Cho ví dụ hoặc gợi ý bài luyện phù hợp.
-
-Trả về kết quả **duy nhất** ở dạng JSON hợp lệ:
 [
   {
     "aspect": "Tên kỹ năng hoặc phần thi (ví dụ: Listening - Part 2 & 3)",
-    "analysis": "Phân tích ngắn gọn điểm yếu",
-    "advice": "Lời khuyên cụ thể để cải thiện",
-    "example": "Ví dụ hoặc bài luyện gợi ý"
+    "analysis": "Phân tích ngắn gọn điểm mạnh/yếu dựa trên số liệu",
+    "advice": "Lời khuyên cụ thể, dễ hiểu, có thể thực hiện được",
+    "example": "Ví dụ hoặc bài luyện gợi ý phù hợp"
   }
 ]
 
-⚠️ Chỉ trả về JSON, không thêm lời giải thích hoặc văn bản khác.
-Nếu người học gần đạt mục tiêu → tập trung nâng cao tốc độ và độ chính xác.
-Nếu còn xa → tập trung xây nền và kỹ năng cơ bản.
+Hãy thực hiện lần lượt:
+1. **Đánh giá tổng quan:** So sánh điểm dự đoán với mục tiêu, nêu nhận xét ngắn gọn về tiến độ hiện tại.
+2. **Phân tích điểm yếu:** Chỉ ra phần hoặc kỹ năng còn yếu (nghe, đọc, ngữ pháp, từ vựng...).
+3. **Đưa ra lời khuyên cải thiện:** Gợi ý hướng học tập cụ thể (thời lượng, dạng bài nên luyện...).
+4. **Kế hoạch học tập:** Gợi ý kế hoạch trong 2–4 tuần giúp tiến gần đến mục tiêu.
+5. **Ví dụ minh họa:** Cho ví dụ hoặc dạng bài gợi ý tương ứng.
+
+⚠️ Chỉ trả về **JSON hợp lệ duy nhất**, không thêm mô tả, tiêu đề hoặc văn bản khác.
+
+Gợi ý hành vi:
+- Nếu người học gần đạt mục tiêu → tập trung nâng cao tốc độ và độ chính xác.
+- Nếu người học còn xa → tập trung củng cố nền tảng, ngữ pháp, và từ vựng cơ bản.
 `;
+
 
 
     const result = await this.genAiProModel.generateContent({
@@ -261,48 +269,59 @@ Nếu còn xa → tập trung xây nền và kỹ năng cơ bản.
         }
       );
     }));
-    const data_predict: any = [[]]
-    data.forEach((d: any) => {
-      data_predict[0].push(
-        d.totalCorrect,
-        d.totalListeningCorrect,
-        d.totalReadingCorrect,
-        d.noAnswerCount,
-        d.listeningScore,
-        d.readingScoreMap,
-        d.part1_correct,
-        d.part2_correct,
-        d.part3_correct,
-        d.part4_correct,
-        d.part5_correct,
-        d.part6_correct,
-        d.part7_correct,
-        d.part1_no_answer,
-        d.part2_no_answer,
-        d.part3_no_answer,
-        d.part4_no_answer,
-        d.part5_no_answer,
-        d.part6_no_answer,
-        d.part7_no_answer,
-        d.days_since_first_exam,
-      );
-    });
+    const data_predict = data.map(d => [
+      d.totalCorrect,
+      d.totalListeningCorrect,
+      d.totalReadingCorrect,
+      d.noAnswerCount,
+      d.listeningScore,
+      d.readingScoreMap,
+      d.part1_correct,
+      d.part2_correct,
+      d.part3_correct,
+      d.part4_correct,
+      d.part5_correct,
+      d.part6_correct,
+      d.part7_correct,
+      d.part1_no_answer,
+      d.part2_no_answer,
+      d.part3_no_answer,
+      d.part4_no_answer,
+      d.part5_no_answer,
+      d.part6_no_answer,
+      d.part7_no_answer,
+      d.days_since_first_exam,
+    ]);
+
 
     const predicted = await axios.post(`${process.env.PYTHON_SERVER_URL}`, { data_predict });
 
     const targetScore = user.targetScore
+    const totalPartCorrect = Array.from({ length: 7 }, (_, i) =>
+      data.reduce((sum, d) => sum + (d[`part${i + 1}_correct`] ?? 0), 0)
+    );
+    const [
+      totalPart1Correct,
+      totalPart2Correct,
+      totalPart3Correct,
+      totalPart4Correct,
+      totalPart5Correct,
+      totalPart6Correct,
+      totalPart7Correct,
+    ] = totalPartCorrect;
 
     const predictedScores = predicted.data.median;
     const advice = await this.adviceToImprove(
       targetScore,
       predictedScores,
-      data[data.length - 1].part1_correct,
-      data[data.length - 1].part2_correct,
-      data[data.length - 1].part3_correct,
-      data[data.length - 1].part4_correct,
-      data[data.length - 1].part5_correct,
-      data[data.length - 1].part6_correct,
-      data[data.length - 1].part7_correct
+      totalPart1Correct,
+      totalPart2Correct,
+      totalPart3Correct,
+      totalPart4Correct,
+      totalPart5Correct,
+      totalPart6Correct,
+      totalPart7Correct,
+      examResults.length
     )
     return {
       predictedScores,

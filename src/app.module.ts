@@ -21,6 +21,7 @@ import { SpeakingAiModule } from './speaking-ai/speaking-ai.module';
 import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
 import { ExamResultModule } from './exam-result/exam-result.module';
 import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
+import { GrammarsModule } from './grammars/grammars.module';
 
 
 @Module({
@@ -52,7 +53,8 @@ import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
     SpeakingAiModule,
     TopicsSpeakingModule,
     ExamResultModule,
-    Part5MistakesModule
+    Part5MistakesModule,
+    GrammarsModule
   ],
   controllers: [AppController],
   providers: [AppService],

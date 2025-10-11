@@ -93,7 +93,7 @@ export class TopicsVocabulariesService {
     return await this.topicsVocabularyModel.findById(id).populate('vocabularies').exec();
   }
 
-  async getVocabulariesFromAI(id: string, maxWords = 20) {
+  async getVocabulariesFromAI(id: string, maxWords = 20 ) {
     const topicsVocabulary = await this.topicsVocabularyModel.findById(id).populate('vocabularies').exec();
     if (!topicsVocabulary) {
       throw new BadRequestException('TopicsVocabulary not found');
