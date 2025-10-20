@@ -146,7 +146,7 @@ Kết quả tổng số câu đúng (tích lũy):
 - Part 7: ${part7_correct} / ${totalExams} lần thi
 
 Yêu cầu:
-Phân tích kết quả và đưa ra lời khuyên học tập **cá nhân hóa**, tuân thủ đúng định dạng JSON sau:
+Phân tích kết quả và đưa ra **lời khuyên học tập cá nhân hóa**, tuân thủ đúng định dạng JSON sau:
 
 [
   {
@@ -158,18 +158,20 @@ Phân tích kết quả và đưa ra lời khuyên học tập **cá nhân hóa*
 ]
 
 Hãy thực hiện lần lượt:
-1. **Đánh giá tổng quan:** So sánh điểm dự đoán với mục tiêu, nêu nhận xét ngắn gọn về tiến độ hiện tại.
-2. **Phân tích điểm yếu:** Chỉ ra phần hoặc kỹ năng còn yếu (nghe, đọc, ngữ pháp, từ vựng...).
-3. **Đưa ra lời khuyên cải thiện:** Gợi ý hướng học tập cụ thể (thời lượng, dạng bài nên luyện...).
-4. **Kế hoạch học tập:** Gợi ý kế hoạch trong 2–4 tuần giúp tiến gần đến mục tiêu.
-5. **Ví dụ minh họa:** Cho ví dụ hoặc dạng bài gợi ý tương ứng.
+1. **Đánh giá tổng quan:** So sánh điểm dự đoán với điểm mục tiêu, cho biết người học đang ở mức nào (gần đạt, đang tiến triển, hay còn xa mục tiêu).
+2. **Phân tích chi tiết:** Chỉ ra điểm mạnh và điểm yếu dựa trên kết quả từng Part (Listening & Reading).
+3. **Đưa ra lời khuyên cải thiện:** Gợi ý hướng học cụ thể, dạng bài cần ưu tiên, thời lượng luyện tập mỗi ngày/tuần.
+4. **Đề xuất kế hoạch 2–4 tuần:** Giúp người học tiến gần hơn đến mục tiêu điểm TOEIC.
+5. **Ví dụ minh họa:** Đưa ra ví dụ cụ thể (dạng bài, tài liệu, hoặc hoạt động gợi ý).
 
-⚠️ Chỉ trả về **JSON hợp lệ duy nhất**, không thêm mô tả, tiêu đề hoặc văn bản khác.
+⚠️ Chỉ trả về **JSON hợp lệ duy nhất**, không thêm mô tả, tiêu đề, hay văn bản khác ngoài JSON.
 
-Gợi ý hành vi:
-- Nếu người học gần đạt mục tiêu → tập trung nâng cao tốc độ và độ chính xác.
-- Nếu người học còn xa → tập trung củng cố nền tảng, ngữ pháp, và từ vựng cơ bản.
+Lưu ý quan trọng:
+- Nếu điểm dự đoán **thấp hơn nhiều so với điểm mục tiêu**, hãy tập trung vào việc củng cố nền tảng (từ vựng, ngữ pháp, kỹ năng nghe đọc cơ bản).
+- Nếu điểm dự đoán **gần đạt hoặc cao hơn mục tiêu**, hãy tập trung vào việc tăng tốc độ, độ chính xác và luyện đề thực tế.
+- Không được hiểu sai đơn vị điểm (ví dụ: 59.1 nghĩa là rất thấp so với 500, không phải là cao).
 `;
+
 
 
 

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { GrammarsService } from './grammars.service';
 import { CreateGrammarDto } from './dto/create-grammar.dto';
 import { UpdateGrammarDto } from './dto/update-grammar.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('grammars')
 export class GrammarsController {
@@ -11,6 +11,11 @@ export class GrammarsController {
   @Post()
   create(@Body() createGrammarDto: CreateGrammarDto) {
     return this.grammarsService.create(createGrammarDto);
+  }
+
+  @Post('multiple')
+  createMultiple(@Body() createGrammarDto: CreateGrammarDto[], @User() user: IUser) {
+    return this.grammarsService.createMultiple(createGrammarDto, user);
   }
 
   @Get()

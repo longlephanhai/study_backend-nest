@@ -13,6 +13,7 @@ export class PermissionsController {
   create(@Body() createPermissionDto: CreatePermissionDto, @User() user: IUser) {
     return this.permissionsService.create(createPermissionDto, user);
   }
+  
   @Get()
   @ResponseMessage("Get all permissions with pagination")
   findAll(

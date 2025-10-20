@@ -24,6 +24,27 @@ export class GrammarsService {
     return 'This action adds a new grammar';
   }
 
+  async createMultiple(createGrammarDto: CreateGrammarDto[], user: IUser) {
+    const titles = createGrammarDto.map(grammar => grammar.title);
+    const isExist = await this.grammarModel.find({
+      title: { $in: titles }
+    });
+    if (isExist.length) {
+      const existTitles = isExist.map(grammar => grammar.title);
+      throw new BadRequestException(`Grammars with these titles are already exist: ${existTitles.join(', ')}`);
+    }
+    const newGrammars = await this.grammarModel.insertMany(
+      createGrammarDto.map(grammar => ({
+        ...grammar,
+        createdBy: {
+          _id: user._id,
+          email: user.email,
+        }
+      }))
+    );
+    return newGrammars;
+  }
+
   async findQuestionsByAI(id: string) {
     const grammar = await this.grammarModel.findById(id)
     if (!grammar) {

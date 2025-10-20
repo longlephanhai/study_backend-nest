@@ -131,7 +131,7 @@ export class TestsService {
   }
 
   async findOne(id: string) {
-    return await this.testModel.findById(id).populate('parts','name description questions');
+    return await this.testModel.findById(id).populate('parts', 'name description questions');
   }
 
   update(id: number, updateTestDto: UpdateTestDto) {

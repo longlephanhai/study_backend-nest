@@ -30,6 +30,7 @@ export class WritingHistoryController {
   }
 
   @Get(':id')
+  @ResponseMessage("Get writing history by id")
   findOne(@Param('id') id: string, @User('id') userId: string) {
     return this.writingHistoryService.findOne(id, userId);
   }

@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
 import mongoose from "mongoose";
 import { Part } from "src/parts/schema/part.schema";
-import { Question } from "src/question/schema/question.schema";
+
 
 export class CreateExamResultDto {
   @IsNotEmpty()

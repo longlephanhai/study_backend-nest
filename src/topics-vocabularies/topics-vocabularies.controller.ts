@@ -42,6 +42,7 @@ export class TopicsVocabulariesController {
   }
 
   @Get(':id')
+  @ResponseMessage("Get a topics vocabulary by id")
   findOne(@Param('id') id: string) {
     return this.topicsVocabulariesService.findOne(id);
   }
