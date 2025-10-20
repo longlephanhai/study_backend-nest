@@ -22,6 +22,7 @@ import { TopicsSpeakingModule } from './topics-speaking/topics-speaking.module';
 import { ExamResultModule } from './exam-result/exam-result.module';
 import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
 import { GrammarsModule } from './grammars/grammars.module';
+import { SurveysModule } from './surveys/surveys.module';
 
 
 @Module({
@@ -54,7 +55,8 @@ import { GrammarsModule } from './grammars/grammars.module';
     TopicsSpeakingModule,
     ExamResultModule,
     Part5MistakesModule,
-    GrammarsModule
+    GrammarsModule,
+    SurveysModule
   ],
   controllers: [AppController],
   providers: [AppService],

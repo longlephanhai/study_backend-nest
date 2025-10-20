@@ -5,11 +5,11 @@ import { TransformInterceptor } from './core/transform.interceptor';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { json } from 'express';
+
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.use(json({ limit: '10mb' }));
+
   app.enableCors(
     {
       "origin": true,
