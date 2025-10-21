@@ -23,6 +23,7 @@ import { ExamResultModule } from './exam-result/exam-result.module';
 import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
 import { GrammarsModule } from './grammars/grammars.module';
 import { SurveysModule } from './surveys/surveys.module';
+import { Part1Module } from './part1/part1.module';
 
 
 @Module({
@@ -56,7 +57,8 @@ import { SurveysModule } from './surveys/surveys.module';
     ExamResultModule,
     Part5MistakesModule,
     GrammarsModule,
-    SurveysModule
+    SurveysModule,
+    Part1Module
   ],
   controllers: [AppController],
   providers: [AppService],
