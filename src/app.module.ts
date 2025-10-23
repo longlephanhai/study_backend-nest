@@ -28,6 +28,7 @@ import { LearningPathModule } from './learning-path/learning-path.module';
 import { LearningStepModule } from './learning-step/learning-step.module';
 import { LearningTaskModule } from './learning-task/learning-task.module';
 import { UserTaskProgressModule } from './user-task-progress/user-task-progress.module';
+import { Part2Module } from './part2/part2.module';
 
 
 @Module({
@@ -66,7 +67,8 @@ import { UserTaskProgressModule } from './user-task-progress/user-task-progress.
     LearningPathModule,
     LearningStepModule,
     LearningTaskModule,
-    UserTaskProgressModule
+    UserTaskProgressModule,
+    Part2Module
   ],
   controllers: [AppController],
   providers: [AppService],
