@@ -24,6 +24,10 @@ import { Part5MistakesModule } from './part5-mistakes/part5-mistakes.module';
 import { GrammarsModule } from './grammars/grammars.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { Part1Module } from './part1/part1.module';
+import { LearningPathModule } from './learning-path/learning-path.module';
+import { LearningStepModule } from './learning-step/learning-step.module';
+import { LearningTaskModule } from './learning-task/learning-task.module';
+import { UserTaskProgressModule } from './user-task-progress/user-task-progress.module';
 
 
 @Module({
@@ -58,7 +62,11 @@ import { Part1Module } from './part1/part1.module';
     Part5MistakesModule,
     GrammarsModule,
     SurveysModule,
-    Part1Module
+    Part1Module,
+    LearningPathModule,
+    LearningStepModule,
+    LearningTaskModule,
+    UserTaskProgressModule
   ],
   controllers: [AppController],
   providers: [AppService],
