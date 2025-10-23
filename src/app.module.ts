@@ -29,6 +29,7 @@ import { LearningStepModule } from './learning-step/learning-step.module';
 import { LearningTaskModule } from './learning-task/learning-task.module';
 import { UserTaskProgressModule } from './user-task-progress/user-task-progress.module';
 import { Part2Module } from './part2/part2.module';
+import { Part3Module } from './part3/part3.module';
 
 
 @Module({
@@ -68,7 +69,8 @@ import { Part2Module } from './part2/part2.module';
     LearningStepModule,
     LearningTaskModule,
     UserTaskProgressModule,
-    Part2Module
+    Part2Module,
+    Part3Module
   ],
   controllers: [AppController],
   providers: [AppService],
