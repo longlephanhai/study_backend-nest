@@ -30,6 +30,7 @@ import { LearningTaskModule } from './learning-task/learning-task.module';
 import { UserTaskProgressModule } from './user-task-progress/user-task-progress.module';
 import { Part2Module } from './part2/part2.module';
 import { Part3Module } from './part3/part3.module';
+import { Part4Module } from './part4/part4.module';
 
 
 @Module({
@@ -70,7 +71,8 @@ import { Part3Module } from './part3/part3.module';
     LearningTaskModule,
     UserTaskProgressModule,
     Part2Module,
-    Part3Module
+    Part3Module,
+    Part4Module
   ],
   controllers: [AppController],
   providers: [AppService],
