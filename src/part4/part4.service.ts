@@ -17,21 +17,21 @@ export class Part4Service {
   }
 
   async createMultiple(createPart4Dtos: CreatePart4Dto[], user: IUser) {
-      const audioUrl = await this.part4Model.find().select('audioUrl').lean();
-      const isExist = audioUrl.some(item =>
-        createPart4Dtos.some(dto => dto.audioUrl === item.audioUrl),
-      );
-      if (isExist) {
-        throw new BadRequestException('Question already exists');
-      }
-      const newParts4 = await this.part4Model.insertMany(
-        createPart4Dtos.map(dto => ({
-          ...dto,
-          createdBy: user._id,
-        })),
-      );
-      return newParts4;
+    const audioUrl = await this.part4Model.find().select('audioUrl').lean();
+    const isExist = audioUrl.some(item =>
+      createPart4Dtos.some(dto => dto.audioUrl === item.audioUrl),
+    );
+    if (isExist) {
+      throw new BadRequestException('Question already exists');
     }
+    const newParts4 = await this.part4Model.insertMany(
+      createPart4Dtos.map(dto => ({
+        ...dto,
+        createdBy: user._id,
+      })),
+    );
+    return newParts4;
+  }
 
   findAll() {
     return `This action returns all part4`;

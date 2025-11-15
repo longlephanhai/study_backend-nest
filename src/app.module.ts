@@ -31,6 +31,7 @@ import { UserTaskProgressModule } from './user-task-progress/user-task-progress.
 import { Part2Module } from './part2/part2.module';
 import { Part3Module } from './part3/part3.module';
 import { Part4Module } from './part4/part4.module';
+import { Part5Module } from './part5/part5.module';
 
 
 @Module({
@@ -72,7 +73,8 @@ import { Part4Module } from './part4/part4.module';
     UserTaskProgressModule,
     Part2Module,
     Part3Module,
-    Part4Module
+    Part4Module,
+    Part5Module
   ],
   controllers: [AppController],
   providers: [AppService],
