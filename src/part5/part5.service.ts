@@ -17,20 +17,20 @@ export class Part5Service {
   }
 
   async createMultiple(createPart5Dtos: CreatePart5Dto[], user: IUser) {
-      const isExist = await this.part5Model.exists({
-        $or: createPart5Dtos.map(dto => ({ question: dto.questionContent })),
-      });
-      if (isExist) {
-        throw new BadRequestException('Question already exists');
-      }
-      const newParts5 = await this.part5Model.insertMany(
-        createPart5Dtos.map(dto => ({
-          ...dto,
-          createdBy: user._id,
-        })),
-      );
-      return newParts5;
+    const isExist = await this.part5Model.exists({
+      $or: createPart5Dtos.map(dto => ({ question: dto.questionContent })),
+    });
+    if (isExist) {
+      throw new BadRequestException('Question already exists');
     }
+    const newParts5 = await this.part5Model.insertMany(
+      createPart5Dtos.map(dto => ({
+        ...dto,
+        createdBy: user._id,
+      })),
+    );
+    return newParts5;
+  }
 
   findAll() {
     return `This action returns all part5`;
