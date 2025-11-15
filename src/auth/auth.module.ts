@@ -7,11 +7,13 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
+import { LearningPathModule } from 'src/learning-path/learning-path.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   imports: [
+    LearningPathModule,
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({

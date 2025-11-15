@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { LearningPathService } from 'src/learning-path/learning-path.service';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { comparePassword } from 'src/util';
@@ -9,6 +10,7 @@ export class AuthService {
 
   constructor(
     private readonly usersService: UsersService,
+    private readonly learningPathService: LearningPathService,
     private jwtService: JwtService
   ) { }
 
@@ -34,6 +36,7 @@ export class AuthService {
       sub: user._id,
       role: user.role,
       targetScore: user.targetScore,
+      learningPaths: await this.learningPathService.findByUser(user._id.toString()) ? true : false,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -47,6 +50,7 @@ export class AuthService {
         address: user.address,
         phone: user.phone,
         targetScore: user.targetScore,
+        learningPaths: payload.learningPaths,
       }
     };
   }

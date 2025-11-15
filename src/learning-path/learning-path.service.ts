@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLearningPathDto } from './dto/create-learning-path.dto';
 import { UpdateLearningPathDto } from './dto/update-learning-path.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LearningPath } from './schema/learning-path.schema';
 import { Model } from 'mongoose';
+import { BadRequestError } from 'openai';
 
 @Injectable()
 export class LearningPathService {
@@ -39,6 +40,10 @@ export class LearningPathService {
         }
       }
     });
+
+    if (learningPaths.length === 0) {
+      throw new BadRequestException('No learning paths found for this user.');
+    }
 
     return learningPaths;
   }

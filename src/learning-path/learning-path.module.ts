@@ -10,5 +10,6 @@ import { LearningPath, LearningPathSchema } from './schema/learning-path.schema'
   ],
   controllers: [LearningPathController],
   providers: [LearningPathService],
+  exports: [LearningPathService],
 })
 export class LearningPathModule { }
