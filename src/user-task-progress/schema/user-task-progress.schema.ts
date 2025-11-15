@@ -25,7 +25,6 @@ export class UserTaskProgress {
   @Prop()
   feedback: string;
 
-
   @Prop()
   createdAt: Date;
 

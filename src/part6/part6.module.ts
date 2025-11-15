@@ -8,5 +8,6 @@ import { Part6, Part6Schema } from './schema/part6.schema';
   imports: [MongooseModule.forFeature([{ name: Part6.name, schema: Part6Schema }])],
   controllers: [Part6Controller],
   providers: [Part6Service],
+  exports: [Part6Service],
 })
 export class Part6Module {}

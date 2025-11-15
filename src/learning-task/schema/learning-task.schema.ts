@@ -12,11 +12,11 @@ export class LearningTask {
   @Prop({ required: true })
   description: string;
 
-  @Prop()
-  resourceUrl: string;
-
-  @Prop({ enum: ['video', 'reading', 'listening', 'quiz', 'practice'], default: 'reading' })
+  @Prop({ required: true })
   type: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, refPath: 'type' })
+  content: string;
 
   @Prop({ default: false })
   isLocked: boolean;

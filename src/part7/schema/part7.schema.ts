@@ -5,6 +5,9 @@ export type Part7Document = HydratedDocument<Part7>;
 
 @Schema({ timestamps: true, })
 export class Part7 {
+  @Prop({ default: 'Part7' })
+  type: string;
+
   @Prop({ required: true })
   options: string[];
 

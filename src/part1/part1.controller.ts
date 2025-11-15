@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { Part1Service } from './part1.service';
 import { CreatePart1Dto } from './dto/create-part1.dto';
 import { UpdatePart1Dto } from './dto/update-part1.dto';
-import { User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('part1')
 export class Part1Controller {
@@ -19,6 +19,7 @@ export class Part1Controller {
   }
 
   @Get()
+  @ResponseMessage("Get all question Part 1 successfully")
   findAll() {
     return this.part1Service.findAll();
   }

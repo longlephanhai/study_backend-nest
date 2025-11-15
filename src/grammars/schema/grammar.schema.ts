@@ -6,12 +6,15 @@ export type GrammarDocument = HydratedDocument<Grammar>;
 
 @Schema({ timestamps: true, })
 export class Grammar {
+
+  @Prop({ default: 'Grammar' })
+  type: string;
+
   @Prop({ required: true })
   title: string;
 
   @Prop({ required: true })
   content: string;
-
 
   @Prop()
   createdAt: Date;

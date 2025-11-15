@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { Part5Service } from './part5.service';
 import { CreatePart5Dto } from './dto/create-part5.dto';
 import { UpdatePart5Dto } from './dto/update-part5.dto';
@@ -20,6 +20,7 @@ export class Part5Controller {
   }
 
   @Get()
+  @ResponseMessage("Get all question Part 5 successfully")
   findAll() {
     return this.part5Service.findAll();
   }

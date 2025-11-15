@@ -35,8 +35,8 @@ export class Part2Service {
     return newParts2;
   }
 
-  findAll() {
-    return `This action returns all part2`;
+  async findAll() {
+    return await this.part2Model.find();
   }
 
   findOne(id: number) {

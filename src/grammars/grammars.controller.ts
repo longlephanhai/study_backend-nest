@@ -33,6 +33,12 @@ export class GrammarsController {
     return this.grammarsService.findQuestionsByAI(id);
   }
 
+  @Get('all')
+  @ResponseMessage("Get all grammars without pagination")
+  findAllWithoutPagination() {
+    return this.grammarsService.findAllWithoutPagination();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.grammarsService.findOne(+id);

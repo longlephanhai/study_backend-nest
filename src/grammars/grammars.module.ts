@@ -12,5 +12,6 @@ import { Grammar, GrammarSchema } from './schema/grammar.schema';
   ],
   controllers: [GrammarsController],
   providers: [GrammarsService],
+  exports: [GrammarsService],
 })
 export class GrammarsModule { }

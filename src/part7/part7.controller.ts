@@ -20,6 +20,7 @@ export class Part7Controller {
   }
 
   @Get()
+  @ResponseMessage("Get all question Part 7 successfully")
   findAll() {
     return this.part7Service.findAll();
   }

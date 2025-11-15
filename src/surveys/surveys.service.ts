@@ -12,6 +12,14 @@ import { UserTaskProgress } from 'src/user-task-progress/schema/user-task-progre
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { ConfigService } from '@nestjs/config';
+import { Part1Service } from 'src/part1/part1.service';
+import { Part2Service } from 'src/part2/part2.service';
+import { Part3Service } from 'src/part3/part3.service';
+import { Part4Service } from 'src/part4/part4.service';
+import { Part5Service } from 'src/part5/part5.service';
+import { Part6Service } from 'src/part6/part6.service';
+import { Part7Service } from 'src/part7/part7.service';
+import { GrammarsService } from 'src/grammars/grammars.service';
 
 @Injectable()
 export class SurveysService {
@@ -24,131 +32,110 @@ export class SurveysService {
     @InjectModel(LearningStep.name) private learningStepModel: Model<LearningStep>,
     @InjectModel(LearningTask.name) private learningTaskModel: Model<LearningTask>,
     @InjectModel(UserTaskProgress.name) private userTaskProgressModel: Model<UserTaskProgress>,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private readonly part1Service: Part1Service,
+    private readonly part2Service: Part2Service,
+    private readonly part3Service: Part3Service,
+    private readonly part4Service: Part4Service,
+    private readonly part5Service: Part5Service,
+    private readonly part6Service: Part6Service,
+    private readonly part7Service: Part7Service,
+    private readonly grammarsService: GrammarsService,
   ) {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
     this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
   }
 
   async create(createSurveyDto: CreateSurveyDto, @User() user: IUser) {
-    // 1️⃣ Tạo survey trước
+    // Tạo Survey
     const newSurvey = await this.surveyModel.create({
       ...createSurveyDto,
       userId: user._id,
     });
 
-    // 2️⃣ Tạo prompt cho AI
+    // Lấy dữ liệu từ các Part và Grammar
+    const partOneData = await this.part1Service.findAll();
+    const partTwoData = await this.part2Service.findAll();
+    const partThreeData = await this.part3Service.findAll();
+    const partFourData = await this.part4Service.findAll();
+    const partFiveData = await this.part5Service.findAll();
+    const partSixData = await this.part6Service.findAll();
+    const partSevenData = await this.part7Service.findAll();
+    const grammarsData = await this.grammarsService.findAllWithoutPagination();
+
+    //  Chuẩn bị prompt cho AI
     const prompt = `
 Bạn là hệ thống tạo lộ trình học TOEIC cá nhân hóa cho người dùng.
 
-Dưới đây là thông tin khảo sát của người dùng:
-${JSON.stringify(createSurveyDto, null, 2)}
+Thông tin Survey và người dùng:
+- Survey ID: ${newSurvey._id}
+- User ID: ${user._id}
+- Dữ liệu khảo sát: ${JSON.stringify(createSurveyDto, null, 2)}
 
-🎯 Mục tiêu: Sinh ra kế hoạch học TOEIC kéo dài 30 ngày (1 tháng), được cá nhân hóa dựa trên thông tin khảo sát.
+Dữ liệu hiện có để tạo task:
+- partOneData = ${JSON.stringify(partOneData.map(p => ({ id: p._id, transcript: p.transcript })))}  
+- partTwoData = ${JSON.stringify(partTwoData.map(p => ({ id: p._id, transcript: p.transcript })))}  
+- partThreeData = ${JSON.stringify(partThreeData.map(p => ({ id: p._id, transcript: p.transcript })))}  
+- partFourData = ${JSON.stringify(partFourData.map(p => ({ id: p._id, transcript: p.transcript })))}  
+- partFiveData = ${JSON.stringify(partFiveData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
+- partSixData = ${JSON.stringify(partSixData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
+- partSevenData = ${JSON.stringify(partSevenData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
+- grammarsData = ${JSON.stringify(grammarsData.map(g => ({ id: g._id, title: g.title })))}  
 
----
+Yêu cầu tạo lộ trình TOEIC 30 ngày:
 
-## ⚙️ QUY ĐỊNH TỔNG QUAN
+1️ learningPath:
+- userId = ${user._id}
+- survey = ${newSurvey._id}
+- title: "Lộ trình chinh phục TOEIC trong 30 ngày"
+- description: "Lộ trình cá nhân hóa dựa trên dữ liệu khảo sát"
+- steps: [] (AI không cần điền)
+- currentDay: 1
+- isCompleted: false
 
-- Chỉ trả về **JSON hợp lệ**, không kèm theo giải thích hoặc text.
-- Bao gồm 4 phần:
-  1️⃣ learningPath  
-  2️⃣ learningSteps[] (30 bước tương ứng 30 ngày)  
-  3️⃣ learningTasks[] (mỗi step 3–5 task cụ thể)  
-  4️⃣ userTaskProgress[]
+2️ learningSteps[]:
+- 30 bước tương ứng 30 ngày
+- Mỗi step có:
+  - title: ngắn gọn, ví dụ "Ngày 1 - Làm quen và đánh giá năng lực"
+  - description: chi tiết
+  - order: 1 → 30
+  - tasks: [] (AI không điền, sẽ map sau)
+  - unlockAt: ISO Date string
+- Cố gắng phân bổ các loại task hợp lý theo ngày:
+  - Ngày 1–5: ôn tập nền tảng, listening cơ bản, grammar
+  - Ngày 6–10: Part1–Part2
+  - Ngày 11–15: Part3–Part4
+  - Ngày 16–20: Part5–Part6
+  - Ngày 21–25: Part7
+  - Ngày 26–29: Practice test full
+  - Ngày 30: Tổng kết & đánh giá
 
-- Mỗi **step**:
-  - "order" chạy từ 1 đến 30.
-  - "unlockAt": ngày mở tương ứng (bắt đầu từ hôm nay, step sau +1 ngày).
-  - "tasks": để trống [] (vì sẽ được map từ learningTasks).
+3️ learningTasks[]:
+- Mỗi task có:
+  - title: ngắn gọn
+  - description: chi tiết, rõ ràng
+  - type: "Part1" | "Part2" | ... | "Part7" | "Grammar"
+  - content: ObjectId từ dữ liệu tương ứng (id trong partOneData → Part1, grammarsData → Grammar, ...)
+  - relatedStep: số step (1 → 30)
+  - isLocked: false cho task đầu tiên mỗi step, true cho các task còn lại
+- Mỗi step tạo 3–5 task
+- Task nên đa dạng: Listening, Reading, Vocabulary, Grammar, Quiz, Practice
 
-- Mỗi **task**:
-  - Thuộc 1 step thông qua "relatedStep" (từ 1 đến 30).
-  - "isLocked": false cho task đầu tiên của mỗi step, true cho các task khác.
-  - "type" nằm trong: ["video", "reading", "listening", "quiz", "practice"].
-  - Mô tả rõ ràng, có ý nghĩa TOEIC thực tế (Listening, Reading, Vocabulary, Grammar, Test practice...).
+4️ userTaskProgress[]:
+- Chỉ tạo template: 
+  - userId = ${user._id}
+  - taskId (gán sau)
+  - completed: false
+  - score: 0
+  - submittedAt: null
+  - feedback: ""
 
-- "steps" trong learningPath phải là [] (rỗng).
+ Lưu ý:
+- Chỉ trả về **JSON hợp lệ**
+- JSON có keys: "learningPath", "learningSteps", "learningTasks"
+- Không kèm giải thích hay text nào khác
 
----
-
-## 📘 CẤU TRÚC CỤ THỂ
-
-### 1️⃣ learningPath
-{
-  "userId": "ObjectId của người dùng",
-  "title": "Lộ trình chinh phục TOEIC trong 30 ngày",
-  "description": "Lộ trình cá nhân hóa được thiết kế dựa trên dữ liệu khảo sát để đạt mục tiêu điểm TOEIC mong muốn.",
-  "survey": "ObjectId",
-  "steps": [],
-  "currentDay": 1,
-  "isCompleted": false
-}
-
-### 2️⃣ learningSteps[]
-[
-  {
-    "title": "Ngày 1 - Làm quen và đánh giá năng lực",
-    "description": "Khởi động hành trình TOEIC: kiểm tra trình độ đầu vào và giới thiệu kỹ năng Listening & Reading.",
-    "order": 1,
-    "tasks": [],
-    "unlockAt": "ISO Date string"
-  },
-  ...
-  (đến ngày 30)
-]
-
-### 3️⃣ learningTasks[]
-[
-  {
-    "title": "Giới thiệu bài thi TOEIC",
-    "description": "Xem video tổng quan về cấu trúc bài thi TOEIC và các mẹo làm bài.",
-    "resourceUrl": "https://example.com/toeic-intro",
-    "type": "video",
-    "isLocked": false,
-    "relatedStep": 1
-  },
-  {
-    "title": "Mini Test Listening",
-    "description": "Làm bài kiểm tra Listening ngắn (Part 1–2) để xác định điểm mạnh yếu.",
-    "resourceUrl": "https://example.com/listening-test",
-    "type": "quiz",
-    "isLocked": true,
-    "relatedStep": 1
-  },
-  ...
-]
-
-### 4️⃣ userTaskProgress[]
-[
-  {
-    "userId": "ObjectId của người dùng",
-    "taskId": "ObjectId (sẽ gán sau khi lưu)",
-    "completed": false,
-    "submittedAt": null,
-    "score": 0,
-    "feedback": ""
-  }
-]
-
----
-
-## 🧠 YÊU CẦU VỀ NỘI DUNG HỌC
-- Tập trung vào 4 kỹ năng TOEIC: Listening, Reading, Vocabulary, Grammar.
-- Cấu trúc gợi ý:
-  - Ngày 1–5: Ôn tập nền tảng, kiểm tra đầu vào, học mẹo Listening.
-  - Ngày 6–10: Listening Part 1–2.
-  - Ngày 11–15: Listening Part 3–4.
-  - Ngày 16–20: Reading Part 5–6.
-  - Ngày 21–25: Reading Part 7.
-  - Ngày 26–29: Practice test full.
-  - Ngày 30: Tổng kết & đánh giá kết quả.
-- Mỗi task nên ngắn gọn, rõ ràng, mô tả chi tiết (ví dụ: “Học 20 từ vựng Part 3”, “Làm bài luyện nghe hội thoại dài”).
-
----
-
-## 📦 OUTPUT JSON FORMAT
-
+Ví dụ JSON trả về:
 {
   "learningPath": { ... },
   "learningSteps": [ ... ],
@@ -158,7 +145,7 @@ ${JSON.stringify(createSurveyDto, null, 2)}
 `;
 
 
-    // 3️⃣ Gọi AI
+    //  Gọi AI tạo nội dung
     const result = await this.genAiProModel.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
@@ -175,46 +162,82 @@ ${JSON.stringify(createSurveyDto, null, 2)}
     try {
       parsedData = JSON.parse(jsonString);
     } catch (error) {
-      console.error("⚠️ JSON parse lỗi:", error, rawText);
+      console.error("JSON parse lỗi:", error, rawText);
       throw new BadRequestException("AI trả về dữ liệu không hợp lệ");
     }
 
     const { learningPath, learningSteps, learningTasks } = parsedData;
 
-    // 4️⃣ Làm sạch dữ liệu để tránh lỗi Cast
+    //  Làm sạch learningPath
     const cleanLearningPath = {
       ...learningPath,
-      steps: [], // luôn là mảng rỗng
+      steps: [],
       userId: user._id,
       survey: newSurvey._id,
     };
 
-    // 5️⃣ Tạo LearningPath
     const createdPath = await this.learningPathModel.create(cleanLearningPath);
 
-    // 6️⃣ Tạo Steps
-    const createdSteps = await this.learningStepModel.insertMany(learningSteps);
+    //  Tạo learningSteps
+    const createdSteps = await this.learningStepModel.insertMany(
+      learningSteps.map((s: any, idx: number) => ({
+        ...s,
+        unlockAt: s.unlockAt || new Date(Date.now() + idx * 24 * 60 * 60 * 1000), // default: mỗi step +1 ngày
+        tasks: [],
+      }))
+    );
 
-    // 7️⃣ Tạo Tasks 
+    //  Tạo learningTasks và map ObjectId cho content
     const createdTasks = await this.learningTaskModel.insertMany(
       learningTasks.map((t: any) => {
+        let contentId: string | null = null;
+
+        switch (t.type) {
+          case "Part1":
+            contentId = partOneData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part2":
+            contentId = partTwoData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part3":
+            contentId = partThreeData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part4":
+            contentId = partFourData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part5":
+            contentId = partFiveData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part6":
+            contentId = partSixData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Part7":
+            contentId = partSevenData.find(p => p.type === t.type)?._id?.toString() ?? null;
+            break;
+          case "Grammar":
+            contentId = grammarsData.find(g => g.type === t.type)?._id?.toString() ?? null;
+            break;
+        }
+
         return {
           ...t,
+          content: contentId,
         };
       })
     );
 
-    // gán tasks vào đúng steps
+    //  Gán tasks vào steps
     for (const step of createdSteps) {
       const tasksForStep = createdTasks.filter(t => t.relatedStep === step.order);
       step.tasks = tasksForStep.map(t => t._id);
       await step.save();
     }
-    // gán steps vào learningPath
+
+    //  Gán steps vào learningPath
     createdPath.steps = createdSteps.map(s => s._id);
     await createdPath.save();
 
-    // 9️⃣ Tạo User Progress
+    // Tạo UserTaskProgress
     await this.userTaskProgressModel.insertMany(
       createdTasks.map((task: any) => ({
         userId: user._id,
@@ -226,7 +249,7 @@ ${JSON.stringify(createSurveyDto, null, 2)}
       }))
     );
 
-    // 🔟 Trả kết quả
+  
     return {
       survey: newSurvey,
       learningPath: createdPath,
@@ -234,6 +257,7 @@ ${JSON.stringify(createSurveyDto, null, 2)}
       learningTasks: createdTasks,
     };
   }
+
 
 
 

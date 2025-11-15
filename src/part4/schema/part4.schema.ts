@@ -5,6 +5,8 @@ export type Part4Document = HydratedDocument<Part4>;
 
 @Schema({ timestamps: true, })
 export class Part4 {
+  @Prop({ default: 'Part4' })
+  type: string;
   @Prop()
   imageUrl: string;
 

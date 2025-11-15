@@ -5,6 +5,8 @@ export type Part2Document = HydratedDocument<Part2>;
 
 @Schema({ timestamps: true, })
 export class Part2 {
+  @Prop({ default: 'Part2' })
+  type: string;
 
   @Prop({ required: true })
   audioUrl: string;
