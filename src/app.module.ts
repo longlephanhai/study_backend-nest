@@ -33,6 +33,7 @@ import { Part3Module } from './part3/part3.module';
 import { Part4Module } from './part4/part4.module';
 import { Part5Module } from './part5/part5.module';
 import { Part6Module } from './part6/part6.module';
+import { Part7Module } from './part7/part7.module';
 
 
 @Module({
@@ -76,7 +77,8 @@ import { Part6Module } from './part6/part6.module';
     Part3Module,
     Part4Module,
     Part5Module,
-    Part6Module
+    Part6Module,
+    Part7Module
   ],
   controllers: [AppController],
   providers: [AppService],
