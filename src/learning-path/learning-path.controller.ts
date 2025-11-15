@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LearningPathService } from './learning-path.service';
 import { CreateLearningPathDto } from './dto/create-learning-path.dto';
 import { UpdateLearningPathDto } from './dto/update-learning-path.dto';
+import { User } from 'src/decorator/customize';
 
 @Controller('learning-path')
 export class LearningPathController {
-  constructor(private readonly learningPathService: LearningPathService) {}
+  constructor(private readonly learningPathService: LearningPathService) { }
 
   @Post()
   create(@Body() createLearningPathDto: CreateLearningPathDto) {
@@ -15,6 +16,11 @@ export class LearningPathController {
   @Get()
   findAll() {
     return this.learningPathService.findAll();
+  }
+
+  @Get('by-user')
+  findByUser(@User() user: IUser) {
+    return this.learningPathService.findByUser(user._id);
   }
 
   @Get(':id')

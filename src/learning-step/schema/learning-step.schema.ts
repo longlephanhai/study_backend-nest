@@ -16,7 +16,6 @@ export class LearningStep {
   @Prop({ required: true })
   order: number;
 
-  // task
   @Prop({ type: [{ type: Types.ObjectId, ref: LearningTask.name }] })
   tasks: LearningTask[];
 
