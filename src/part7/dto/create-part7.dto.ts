@@ -20,5 +20,5 @@ export class CreatePart7Dto {
   questionContent: string;
 
   @IsNotEmpty({ message: 'Reading should not be empty' })
-  reading: string;
+  reading: string[];
 }

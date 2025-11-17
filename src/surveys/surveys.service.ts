@@ -47,216 +47,191 @@ export class SurveysService {
   }
 
   async create(createSurveyDto: CreateSurveyDto, @User() user: IUser) {
-    // Tạo Survey
-    const newSurvey = await this.surveyModel.create({
-      ...createSurveyDto,
-      userId: user._id,
-    });
+  // Tạo Survey
+  const newSurvey = await this.surveyModel.create({
+    ...createSurveyDto,
+    userId: user._id,
+  });
 
-    // Lấy dữ liệu từ các Part và Grammar
-    const partOneData = await this.part1Service.findAll();
-    const partTwoData = await this.part2Service.findAll();
-    const partThreeData = await this.part3Service.findAll();
-    const partFourData = await this.part4Service.findAll();
-    const partFiveData = await this.part5Service.findAll();
-    const partSixData = await this.part6Service.findAll();
-    const partSevenData = await this.part7Service.findAll();
-    const grammarsData = await this.grammarsService.findAllWithoutPagination();
+  // Lấy dữ liệu câu hỏi từ DB
+  const partOneData = await this.part1Service.findAll();
+  const partTwoData = await this.part2Service.findAll();
+  const partThreeData = await this.part3Service.findAll();
+  const partFourData = await this.part4Service.findAll();
+  const partFiveData = await this.part5Service.findAll();
+  const partSixData = await this.part6Service.findAll();
+  const partSevenData = await this.part7Service.findAll();
+  const grammarsData = await this.grammarsService.findAllWithoutPagination();
 
-    //  Chuẩn bị prompt cho AI
-    const prompt = `
-Bạn là hệ thống tạo lộ trình học TOEIC cá nhân hóa cho người dùng.
+  // Tạo prompt AI
+  const prompt = `
+Bạn là hệ thống tạo lộ trình học TOEIC 30 ngày cho người dùng.
 
 Thông tin Survey và người dùng:
 - Survey ID: ${newSurvey._id}
 - User ID: ${user._id}
 - Dữ liệu khảo sát: ${JSON.stringify(createSurveyDto, null, 2)}
 
-Dữ liệu hiện có để tạo task:
-- partOneData = ${JSON.stringify(partOneData.map(p => ({ id: p._id, transcript: p.transcript })))}  
-- partTwoData = ${JSON.stringify(partTwoData.map(p => ({ id: p._id, transcript: p.transcript })))}  
-- partThreeData = ${JSON.stringify(partThreeData.map(p => ({ id: p._id, transcript: p.transcript })))}  
-- partFourData = ${JSON.stringify(partFourData.map(p => ({ id: p._id, transcript: p.transcript })))}  
-- partFiveData = ${JSON.stringify(partFiveData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
-- partSixData = ${JSON.stringify(partSixData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
-- partSevenData = ${JSON.stringify(partSevenData.map(p => ({ id: p._id, questionContent: p.questionContent })))}  
-- grammarsData = ${JSON.stringify(grammarsData.map(g => ({ id: g._id, title: g.title })))}  
+Dữ liệu hiện có:
+- partOneData = ${JSON.stringify(partOneData.map(p => ({ id: p._id })))}  
+- partTwoData = ${JSON.stringify(partTwoData.map(p => ({ id: p._id })))}  
+- partThreeData = ${JSON.stringify(partThreeData.map(p => ({ id: p._id })))}  
+- partFourData = ${JSON.stringify(partFourData.map(p => ({ id: p._id })))}  
+- partFiveData = ${JSON.stringify(partFiveData.map(p => ({ id: p._id })))}  
+- partSixData = ${JSON.stringify(partSixData.map(p => ({ id: p._id })))}  
+- partSevenData = ${JSON.stringify(partSevenData.map(p => ({ id: p._id })))}  
+- grammarsData = ${JSON.stringify(grammarsData.map(g => ({ id: g._id })))}  
 
-Yêu cầu tạo lộ trình TOEIC 30 ngày:
+---------------------------------------
+YÊU CẦU SINH RA DUY NHẤT JSON:
+{
+  "learningPath": {},
+  "learningSteps": [],
+  "learningTasks": [],
+  "userTaskProgress": []
+}
+---------------------------------------
 
-1️ learningPath:
-- userId = ${user._id}
-- survey = ${newSurvey._id}
+QUY ĐỊNH:
+- content: phải là MẢNG ObjectId (string[])
+- Grammar → content là mảng 1 phần tử
+- Listening / Reading → 3–10 câu tùy mức
+- Practice test → có thể mix nhiều Part
+
+---------------------------------------
+learningPath:
+---------------------------------------
+- userId = "${user._id}"
+- survey = "${newSurvey._id}"
 - title: "Lộ trình chinh phục TOEIC trong 30 ngày"
-- description: "Lộ trình cá nhân hóa dựa trên dữ liệu khảo sát"
-- steps: [] (AI không cần điền)
+- description: "Lộ trình cá nhân hóa dựa trên khảo sát"
+- steps: []
 - currentDay: 1
 - isCompleted: false
 
-2️ learningSteps[]:
-- 30 bước tương ứng 30 ngày
-- Mỗi step có:
-  - title: ngắn gọn, ví dụ "Ngày 1 - Làm quen và đánh giá năng lực"
-  - description: chi tiết
-  - order: 1 → 30
-  - tasks: [] (AI không điền, sẽ map sau)
-  - unlockAt: ISO Date string
-- Cố gắng phân bổ các loại task hợp lý theo ngày:
-  - Ngày 1–5: ôn tập nền tảng, listening cơ bản, grammar
-  - Ngày 6–10: Part1–Part2
-  - Ngày 11–15: Part3–Part4
-  - Ngày 16–20: Part5–Part6
-  - Ngày 21–25: Part7
-  - Ngày 26–29: Practice test full
-  - Ngày 30: Tổng kết & đánh giá
+---------------------------------------
+learningSteps (30 ngày):
+---------------------------------------
+- 30 step
+- mỗi step:
+  {
+    "title": "",
+    "description": "",
+    "order": 1..30,
+    "tasks": [],
+    "unlockAt": ISODateString
+  }
 
-3️ learningTasks[]:
-- Mỗi task có:
-  - title: ngắn gọn
-  - description: chi tiết, rõ ràng
-  - type: "Part1" | "Part2" | ... | "Part7" | "Grammar"
-  - content: ObjectId từ dữ liệu tương ứng (id trong partOneData → Part1, grammarsData → Grammar, ...)
-  - relatedStep: số step (1 → 30)
-  - isLocked: false cho task đầu tiên mỗi step, true cho các task còn lại
-- Mỗi step tạo 3–5 task
-- Task nên đa dạng: Listening, Reading, Vocabulary, Grammar, Quiz, Practice
-
-4️ userTaskProgress[]:
-- Chỉ tạo template: 
-  - userId = ${user._id}
-  - taskId (gán sau)
-  - completed: false
-  - score: 0
-  - submittedAt: null
-  - feedback: ""
-
- Lưu ý:
-- Chỉ trả về **JSON hợp lệ**
-- JSON có keys: "learningPath", "learningSteps", "learningTasks"
-- Không kèm giải thích hay text nào khác
-
-Ví dụ JSON trả về:
+---------------------------------------
+learningTasks:
+---------------------------------------
+- mỗi step 3–5 task
+- mỗi task:
 {
-  "learningPath": { ... },
-  "learningSteps": [ ... ],
-  "learningTasks": [ ... ],
-  "userTaskProgress": [ ... ]
+  "title": "",
+  "description": "",
+  "type": "Part1"|"Part2"|"Part3"|"Part4"|"Part5"|"Part6"|"Part7"|"Grammar",
+  "content": ["id1","id2",...],
+  "relatedStep": number,
+  "isLocked": boolean
 }
+
+---------------------------------------
+userTaskProgress:
+---------------------------------------
+- userId: "${user._id}"
+- taskId: gán sau tại backend
+- completed: false
+- score: 0
+- submittedAt: null
+- feedback: ""
+
+---------------------------------------
+CHỈ TRẢ VỀ JSON — KHÔNG THÊM GIẢI THÍCH
+---------------------------------------
 `;
 
+  // Gọi AI
+  const result = await this.genAiProModel.generateContent({
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+  });
 
-    //  Gọi AI tạo nội dung
-    const result = await this.genAiProModel.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    });
+  const rawText = result.response.text();
+  const jsonStart = rawText.indexOf("{");
+  const jsonEnd = rawText.lastIndexOf("}");
+  const jsonString =
+    jsonStart !== -1 && jsonEnd !== -1
+      ? rawText.slice(jsonStart, jsonEnd + 1)
+      : rawText;
 
-    const rawText = result.response.text();
-    const jsonStart = rawText.indexOf("{");
-    const jsonEnd = rawText.lastIndexOf("}");
-    const jsonString =
-      jsonStart !== -1 && jsonEnd !== -1
-        ? rawText.slice(jsonStart, jsonEnd + 1)
-        : rawText;
-
-    let parsedData: any;
-    try {
-      parsedData = JSON.parse(jsonString);
-    } catch (error) {
-      console.error("JSON parse lỗi:", error, rawText);
-      throw new BadRequestException("AI trả về dữ liệu không hợp lệ");
-    }
-
-    const { learningPath, learningSteps, learningTasks } = parsedData;
-
-    //  Làm sạch learningPath
-    const cleanLearningPath = {
-      ...learningPath,
-      steps: [],
-      userId: user._id,
-      survey: newSurvey._id,
-    };
-
-    const createdPath = await this.learningPathModel.create(cleanLearningPath);
-
-    //  Tạo learningSteps
-    const createdSteps = await this.learningStepModel.insertMany(
-      learningSteps.map((s: any, idx: number) => ({
-        ...s,
-        unlockAt: s.unlockAt || new Date(Date.now() + idx * 24 * 60 * 60 * 1000), // default: mỗi step +1 ngày
-        tasks: [],
-      }))
-    );
-
-    //  Tạo learningTasks và map ObjectId cho content
-    const createdTasks = await this.learningTaskModel.insertMany(
-      learningTasks.map((t: any) => {
-        let contentId: string | null = null;
-
-        switch (t.type) {
-          case "Part1":
-            contentId = partOneData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part2":
-            contentId = partTwoData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part3":
-            contentId = partThreeData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part4":
-            contentId = partFourData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part5":
-            contentId = partFiveData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part6":
-            contentId = partSixData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Part7":
-            contentId = partSevenData.find(p => p.type === t.type)?._id?.toString() ?? null;
-            break;
-          case "Grammar":
-            contentId = grammarsData.find(g => g.type === t.type)?._id?.toString() ?? null;
-            break;
-        }
-
-        return {
-          ...t,
-          content: contentId,
-        };
-      })
-    );
-
-    //  Gán tasks vào steps
-    for (const step of createdSteps) {
-      const tasksForStep = createdTasks.filter(t => t.relatedStep === step.order);
-      step.tasks = tasksForStep.map(t => t._id);
-      await step.save();
-    }
-
-    //  Gán steps vào learningPath
-    createdPath.steps = createdSteps.map(s => s._id);
-    await createdPath.save();
-
-    // Tạo UserTaskProgress
-    await this.userTaskProgressModel.insertMany(
-      createdTasks.map((task: any) => ({
-        userId: user._id,
-        taskId: task._id,
-        completed: false,
-        submittedAt: null,
-        score: 0,
-        feedback: "",
-      }))
-    );
-
-  
-    return {
-      survey: newSurvey,
-      learningPath: createdPath,
-      learningSteps: createdSteps,
-      learningTasks: createdTasks,
-    };
+  let parsedData: any;
+  try {
+    parsedData = JSON.parse(jsonString);
+  } catch (error) {
+    console.error("JSON parse lỗi:", error, rawText);
+    throw new BadRequestException("AI trả về dữ liệu không hợp lệ");
   }
+
+  const { learningPath, learningSteps, learningTasks } = parsedData;
+
+  // Tạo learningPath
+  const createdPath = await this.learningPathModel.create({
+    ...learningPath,
+    steps: [],
+    userId: user._id,
+    survey: newSurvey._id,
+  });
+
+  // Tạo Steps
+  const createdSteps = await this.learningStepModel.insertMany(
+    learningSteps.map((s: any, idx: number) => ({
+      ...s,
+      unlockAt: s.unlockAt || new Date(Date.now() + idx * 24 * 60 * 60 * 1000),
+      tasks: [],
+    }))
+  );
+
+  // Tạo Tasks — CHỈ GIỮ content AS-IS (MẢNG)
+  const createdTasks = await this.learningTaskModel.insertMany(
+    learningTasks.map((t: any) => ({
+      ...t,
+      content: Array.isArray(t.content) ? t.content : [],
+    }))
+  );
+
+  // Gán task vào step
+  for (const step of createdSteps) {
+    const tasksForStep = createdTasks.filter(
+      (t) => t.relatedStep === step.order
+    );
+    step.tasks = tasksForStep.map((t) => t._id);
+    await step.save();
+  }
+
+  // Gán steps vào path
+  createdPath.steps = createdSteps.map((s) => s._id);
+  await createdPath.save();
+
+  // Tạo UserTaskProgress
+  await this.userTaskProgressModel.insertMany(
+    createdTasks.map((task: any) => ({
+      userId: user._id,
+      taskId: task._id,
+      completed: false,
+      submittedAt: null,
+      score: 0,
+      feedback: "",
+    }))
+  );
+
+  return {
+    survey: newSurvey,
+    learningPath: createdPath,
+    learningSteps: createdSteps,
+    learningTasks: createdTasks,
+  };
+}
+
 
 
 

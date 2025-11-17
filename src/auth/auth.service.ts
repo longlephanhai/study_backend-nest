@@ -36,7 +36,7 @@ export class AuthService {
       sub: user._id,
       role: user.role,
       targetScore: user.targetScore,
-      learningPaths: await this.learningPathService.findByUser(user._id.toString()) ? true : false,
+      // learningPaths: await this.learningPathService.findByUser(user._id.toString()) ?? false,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -50,7 +50,7 @@ export class AuthService {
         address: user.address,
         phone: user.phone,
         targetScore: user.targetScore,
-        learningPaths: payload.learningPaths,
+        learningPaths: await this.learningPathService.findByUser(user._id.toString()) ?? false,
       }
     };
   }

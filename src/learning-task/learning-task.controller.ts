@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LearningTaskService } from './learning-task.service';
 import { CreateLearningTaskDto } from './dto/create-learning-task.dto';
 import { UpdateLearningTaskDto } from './dto/update-learning-task.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('learning-task')
 export class LearningTaskController {
-  constructor(private readonly learningTaskService: LearningTaskService) {}
+  constructor(private readonly learningTaskService: LearningTaskService) { }
 
   @Post()
   create(@Body() createLearningTaskDto: CreateLearningTaskDto) {
@@ -18,8 +19,9 @@ export class LearningTaskController {
   }
 
   @Get(':id')
+  @ResponseMessage('Get learning task successfully')
   findOne(@Param('id') id: string) {
-    return this.learningTaskService.findOne(+id);
+    return this.learningTaskService.findOne(id);
   }
 
   @Patch(':id')

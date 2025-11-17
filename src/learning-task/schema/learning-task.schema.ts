@@ -15,8 +15,8 @@ export class LearningTask {
   @Prop({ required: true })
   type: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, refPath: 'type' })
-  content: string;
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, refPath: 'type' }] })
+  content: mongoose.Types.ObjectId[];
 
   @Prop({ default: false })
   isLocked: boolean;

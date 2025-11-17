@@ -34,15 +34,11 @@ export class LearningPathService {
       populate: {
         path: 'tasks',
         select: 'title description type content isLocked relatedStep',
-        populate: {
-          path: 'content',
-          select: '-createdBy -createdAt -updatedAt'
-        }
       }
     });
 
     if (learningPaths.length === 0) {
-      throw new BadRequestException('No learning paths found for this user.');
+      return false;
     }
 
     return learningPaths;

@@ -26,8 +26,8 @@ export class Part7 {
   @Prop({ required: true })
   questionContent: string;
 
-  @Prop({ required: true })
-  reading: string;
+  @Prop({ type: [String] })
+  reading?: string[];
 
   @Prop()
   createdAt: Date;
