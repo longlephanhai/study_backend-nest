@@ -30,7 +30,7 @@ export class LearningPathController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLearningPathDto: UpdateLearningPathDto) {
-    return this.learningPathService.update(+id, updateLearningPathDto);
+    return this.learningPathService.update(id, updateLearningPathDto);
   }
 
   @Delete(':id')

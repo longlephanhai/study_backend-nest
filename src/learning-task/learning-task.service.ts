@@ -31,8 +31,15 @@ export class LearningTaskService {
     return task;
   }
 
-  update(id: number, updateLearningTaskDto: UpdateLearningTaskDto) {
-    return `This action updates a #${id} learningTask`;
+  async update(id: string, updateLearningTaskDto: UpdateLearningTaskDto) {
+    const task = await this.learningTask.findById(id);
+    if (!task) {
+      throw new BadRequestException('Learning task does not exist');
+    }
+    return await this.learningTask.updateOne(
+      { _id: id },
+      { isLocked: true }
+    )
   }
 
   remove(id: number) {

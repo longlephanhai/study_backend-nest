@@ -26,7 +26,7 @@ export class LearningTaskController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLearningTaskDto: UpdateLearningTaskDto) {
-    return this.learningTaskService.update(+id, updateLearningTaskDto);
+    return this.learningTaskService.update(id, updateLearningTaskDto);
   }
 
   @Delete(':id')

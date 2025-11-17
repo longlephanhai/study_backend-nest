@@ -44,8 +44,16 @@ export class LearningPathService {
     return learningPaths;
   }
 
-  update(id: number, updateLearningPathDto: UpdateLearningPathDto) {
-    return `This action updates a #${id} learningPath`;
+  async update(id: string, updateLearningPathDto: UpdateLearningPathDto) {
+    const path = await this.learningPathModel.findById(id);
+    if (!path) {
+      throw new BadRequestException('Learning path does not exist');
+    }
+    return await this.learningPathModel.updateOne({
+      _id: id,
+    }, {
+      currentDay: path.currentDay + 1,
+    })
   }
 
   remove(id: number) {
