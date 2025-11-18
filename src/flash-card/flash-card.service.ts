@@ -46,8 +46,11 @@ export class FlashCardService {
     })
   }
 
-  findAll() {
-    return `This action returns all flashCard`;
+  async findAll(user: IUser) {
+    const flashCards = await this.flashCardModel.find({
+      userId: user._id,
+    })
+    return flashCards;
   }
 
   async findOne(id: string) {

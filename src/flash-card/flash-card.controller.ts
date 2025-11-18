@@ -22,12 +22,13 @@ export class FlashCardController {
   }
 
   @Get()
-  findAll() {
-    return this.flashCardService.findAll();
+  @ResponseMessage("Flash cards retrieved successfully by user")
+  findAll(@User() user: IUser) {
+    return this.flashCardService.findAll(user);
   }
 
   @Get(':id')
-  @ResponseMessage("Flash card retrieved successfully")
+  @ResponseMessage("vocabularies flash card retrieved successfully")
   findOne(@Param('id') id: string) {
     return this.flashCardService.findOne(id);
   }
