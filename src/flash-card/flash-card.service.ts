@@ -50,8 +50,12 @@ export class FlashCardService {
     return `This action returns all flashCard`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} flashCard`;
+  async findOne(id: string) {
+    const flashCard = await this.flashCardModel.findById(id).populate('vocabulariesFlashCardId');
+    if (!flashCard) {
+      throw new BadRequestException("Flash card not found");
+    }
+    return flashCard;
   }
 
   update(id: number, updateFlashCardDto: UpdateFlashCardDto) {

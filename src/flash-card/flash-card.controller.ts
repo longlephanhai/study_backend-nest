@@ -27,8 +27,9 @@ export class FlashCardController {
   }
 
   @Get(':id')
+  @ResponseMessage("Flash card retrieved successfully")
   findOne(@Param('id') id: string) {
-    return this.flashCardService.findOne(+id);
+    return this.flashCardService.findOne(id);
   }
 
   @Patch(':id')

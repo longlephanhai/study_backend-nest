@@ -50,7 +50,7 @@ export class AuthService {
         address: user.address,
         phone: user.phone,
         targetScore: user.targetScore,
-        learningPaths: await this.learningPathService.findByUser(user._id.toString()) ?? false,
+        learningPaths: await this.learningPathService.findByUser(user._id) ? true : false,
       }
     };
   }
