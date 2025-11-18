@@ -4,12 +4,15 @@ import { UpdateFlashCardDto } from './dto/update-flash-card.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { FlashCard } from './schema/flash-card.schema';
 import { Model } from 'mongoose';
+import { VocabulariesFlashCard } from 'src/vocabularies-flash-card/schema/vocabularies-flash-card.schema';
+import { CreateVocabulariesFlashCardDto } from 'src/vocabularies-flash-card/dto/create-vocabularies-flash-card.dto';
 
 @Injectable()
 export class FlashCardService {
 
   constructor(
     @InjectModel(FlashCard.name) private flashCardModel: Model<FlashCard>,
+    @InjectModel(VocabulariesFlashCard.name) private vocabulariesFlashCardModel: Model<VocabulariesFlashCard>,
   ) { }
 
   async create(createFlashCardDto: CreateFlashCardDto, user: IUser) {
@@ -28,6 +31,19 @@ export class FlashCardService {
       },
     });
     return newFlashCard;
+  }
+
+  async createVocabularies(id: string, createVocabulariesFlashCardDto: CreateVocabulariesFlashCardDto[], user: IUser) {
+    const flashCard = await this.flashCardModel.findById(id);
+    if (!flashCard) {
+      throw new BadRequestException("Flash card not found");
+    }
+    const vocabularies = await this.vocabulariesFlashCardModel.insertMany(createVocabulariesFlashCardDto)
+    await this.flashCardModel.findByIdAndUpdate(id, {
+      $push: {
+        vocabulariesFlashCardId: { $each: vocabularies.map(v => v._id) }
+      }
+    })
   }
 
   findAll() {

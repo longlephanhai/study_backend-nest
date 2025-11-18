@@ -1,24 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { User } from 'src/users/schema/user.schema';
-import { VocabulariesFlashCard } from 'src/vocabularies-flash-card/schema/vocabularies-flash-card.schema';
 
 
-export type FlashCardDocument = HydratedDocument<FlashCard>;
+export type VocabulariesFlashCardDocument = HydratedDocument<VocabulariesFlashCard>;
 
 @Schema({ timestamps: true, })
-export class FlashCard {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true })
-  userId: mongoose.Schema.Types.ObjectId;
+export class VocabulariesFlashCard {
+  @Prop({ required: true })
+  vocabulary: string;
 
   @Prop({ required: true })
-  title: string;
+  meaning: string;
 
-  @Prop({ required: true })
-  description: string;
+  @Prop()
+  example: string;
 
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: VocabulariesFlashCard.name })
-  vocabulariesFlashCardId: mongoose.Schema.Types.ObjectId[];
+  @Prop()
+  pronunciation: string;
+
+  @Prop()
+  image: string;
 
   @Prop()
   createdAt: Date;
@@ -51,4 +52,4 @@ export class FlashCard {
   deletedAt: Date;
 }
 
-export const FlashCardSchema = SchemaFactory.createForClass(FlashCard);
+export const VocabulariesFlashCardSchema = SchemaFactory.createForClass(VocabulariesFlashCard);
