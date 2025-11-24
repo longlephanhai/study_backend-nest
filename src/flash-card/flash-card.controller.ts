@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { FlashCardService } from './flash-card.service';
 import { CreateFlashCardDto } from './dto/create-flash-card.dto';
 import { UpdateFlashCardDto } from './dto/update-flash-card.dto';
@@ -39,7 +39,8 @@ export class FlashCardController {
   }
 
   @Delete(':id')
+  @ResponseMessage("Flash card deleted successfully")
   remove(@Param('id') id: string) {
-    return this.flashCardService.remove(+id);
+    return this.flashCardService.remove(id);
   }
 }

@@ -65,7 +65,15 @@ export class FlashCardService {
     return `This action updates a #${id} flashCard`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} flashCard`;
+  async remove(id: string) {
+    const flashCard = await this.flashCardModel.findOne({ _id: id });
+    if (!flashCard) {
+      throw new BadRequestException("Flash card not found");
+    }
+    await this.vocabulariesFlashCardModel.deleteMany({
+      _id: { $in: flashCard.vocabulariesFlashCardId }
+    });
+    return await this.flashCardModel.deleteOne({ _id: id });
+
   }
 }
