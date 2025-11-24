@@ -4,6 +4,7 @@ import { CreateFlashCardDto } from './dto/create-flash-card.dto';
 import { UpdateFlashCardDto } from './dto/update-flash-card.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { CreateVocabulariesFlashCardDto } from 'src/vocabularies-flash-card/dto/create-vocabularies-flash-card.dto';
+import { UpdateVocabulariesFlashCardDto } from 'src/vocabularies-flash-card/dto/update-vocabularies-flash-card.dto';
 
 @Controller('flash-card')
 export class FlashCardController {
@@ -34,8 +35,15 @@ export class FlashCardController {
   }
 
   @Patch(':id')
+  @ResponseMessage("Flash card updated successfully")
   update(@Param('id') id: string, @Body() updateFlashCardDto: UpdateFlashCardDto) {
-    return this.flashCardService.update(+id, updateFlashCardDto);
+    return this.flashCardService.update(id, updateFlashCardDto);
+  }
+
+  @Patch('vocabularies/:id')
+  @ResponseMessage("Vocabularies flash card updated successfully")
+  updateVocabularies(@Param('id') id: string, @Body() updateVocabulariesFlashCardDto: UpdateVocabulariesFlashCardDto[]) {
+    return this.flashCardService.updateVocabularies(id, updateVocabulariesFlashCardDto);
   }
 
   @Delete(':id')

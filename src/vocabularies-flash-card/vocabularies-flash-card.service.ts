@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateVocabulariesFlashCardDto } from './dto/create-vocabularies-flash-card.dto';
 import { UpdateVocabulariesFlashCardDto } from './dto/update-vocabularies-flash-card.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,8 +12,14 @@ export class VocabulariesFlashCardService {
     @InjectModel(VocabulariesFlashCard.name) private vocabulariesFlashCardModel: Model<VocabulariesFlashCard>,
   ) { }
 
-  create(createVocabulariesFlashCardDto: CreateVocabulariesFlashCardDto) {
-    return 'This action adds a new vocabulariesFlashCard';
+  async create(createVocabulariesFlashCardDto: CreateVocabulariesFlashCardDto, user: IUser) {
+    await this.vocabulariesFlashCardModel.create({
+      ...createVocabulariesFlashCardDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
   }
 
   findAll() {
@@ -24,8 +30,14 @@ export class VocabulariesFlashCardService {
     return `This action returns a #${id} vocabulariesFlashCard`;
   }
 
-  update(id: number, updateVocabulariesFlashCardDto: UpdateVocabulariesFlashCardDto) {
-    return `This action updates a #${id} vocabulariesFlashCard`;
+  async update(id: string, updateVocabulariesFlashCardDto: UpdateVocabulariesFlashCardDto) {
+    const vocabulary = await this.vocabulariesFlashCardModel.findOne({
+      _id: id,
+    })
+    if (!vocabulary) {
+      throw new BadRequestException("Vocabulary not found");
+    }
+    return await this.vocabulariesFlashCardModel.findByIdAndUpdate(id, updateVocabulariesFlashCardDto, { new: true });
   }
 
   remove(id: number) {

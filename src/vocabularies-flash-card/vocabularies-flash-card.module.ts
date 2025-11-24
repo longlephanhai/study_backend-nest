@@ -10,5 +10,6 @@ import { VocabulariesFlashCard, VocabulariesFlashCardSchema } from './schema/voc
   ],
   controllers: [VocabulariesFlashCardController],
   providers: [VocabulariesFlashCardService],
+  exports: [VocabulariesFlashCardService],
 })
 export class VocabulariesFlashCardModule { }

@@ -1,6 +1,9 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
+import mongoose from "mongoose";
 
 export class CreateVocabulariesFlashCardDto {
+  _id: string;
+
   @IsNotEmpty({ message: 'Vocabulary is required' })
   vocabulary: string;
 
