@@ -39,7 +39,7 @@ export class FlashCardService {
       throw new BadRequestException("Flash card not found");
     }
     const vocabularies = await this.vocabulariesFlashCardModel.insertMany(createVocabulariesFlashCardDto)
-    await this.flashCardModel.findByIdAndUpdate(id, {
+    return await this.flashCardModel.findByIdAndUpdate(id, {
       $push: {
         vocabulariesFlashCardId: { $each: vocabularies.map(v => v._id) }
       }

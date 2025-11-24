@@ -3,7 +3,6 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/users/schema/user.schema';
 import { VocabulariesFlashCard } from 'src/vocabularies-flash-card/schema/vocabularies-flash-card.schema';
 
-
 export type FlashCardDocument = HydratedDocument<FlashCard>;
 
 @Schema({ timestamps: true, })

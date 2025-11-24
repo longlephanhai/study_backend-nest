@@ -16,7 +16,7 @@ export class FlashCardController {
   }
 
   @Post('vocabularies/:id')
-  @ResponseMessage("Flash card with vocabularies created successfully")
+  @ResponseMessage("Vocabularies created successfully")
   createVocabularies(@Param('id') id: string, @Body() createVocabulariesFlashCardDto: CreateVocabulariesFlashCardDto[], @User() user: IUser) {
     return this.flashCardService.createVocabularies(id, createVocabulariesFlashCardDto, user);
   }
