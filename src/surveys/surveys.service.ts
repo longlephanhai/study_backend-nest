@@ -47,24 +47,24 @@ export class SurveysService {
   }
 
   async create(createSurveyDto: CreateSurveyDto, @User() user: IUser) {
-  // Tạo Survey
-  const newSurvey = await this.surveyModel.create({
-    ...createSurveyDto,
-    userId: user._id,
-  });
+    // Tạo Survey
+    const newSurvey = await this.surveyModel.create({
+      ...createSurveyDto,
+      userId: user._id,
+    });
 
-  // Lấy dữ liệu câu hỏi từ DB
-  const partOneData = await this.part1Service.findAll();
-  const partTwoData = await this.part2Service.findAll();
-  const partThreeData = await this.part3Service.findAll();
-  const partFourData = await this.part4Service.findAll();
-  const partFiveData = await this.part5Service.findAll();
-  const partSixData = await this.part6Service.findAll();
-  const partSevenData = await this.part7Service.findAll();
-  const grammarsData = await this.grammarsService.findAllWithoutPagination();
+    // Lấy dữ liệu câu hỏi từ DB
+    const partOneData = await this.part1Service.findAll();
+    const partTwoData = await this.part2Service.findAll();
+    const partThreeData = await this.part3Service.findAll();
+    const partFourData = await this.part4Service.findAll();
+    const partFiveData = await this.part5Service.findAll();
+    const partSixData = await this.part6Service.findAll();
+    const partSevenData = await this.part7Service.findAll();
+    const grammarsData = await this.grammarsService.findAllWithoutPagination();
 
-  // Tạo prompt AI
-  const prompt = `
+    // Tạo prompt AI
+    const prompt = `
 Bạn là hệ thống tạo lộ trình học TOEIC 30 ngày cho người dùng.
 
 Thông tin Survey và người dùng:
@@ -80,7 +80,14 @@ Dữ liệu hiện có:
 - partFiveData = ${JSON.stringify(partFiveData.map(p => ({ id: p._id })))}  
 - partSixData = ${JSON.stringify(partSixData.map(p => ({ id: p._id })))}  
 - partSevenData = ${JSON.stringify(partSevenData.map(p => ({ id: p._id })))}  
-- grammarsData = ${JSON.stringify(grammarsData.map(g => ({ id: g._id })))}  
+- - grammarsData = ${JSON.stringify(
+      grammarsData.map(g => ({
+        id: g._id,
+        title: g.title,
+        content: g.content
+      }))
+    )}
+  
 
 ---------------------------------------
 YÊU CẦU SINH RA DUY NHẤT JSON:
@@ -97,7 +104,7 @@ QUY ĐỊNH:
 - Grammar → content là mảng 1 phần tử
 - Listening / Reading → 3–10 câu tùy mức
 - Practice test → có thể mix nhiều Part
-
+- Grammar task description phải lấy trực tiếp từ title.
 ---------------------------------------
 learningPath:
 ---------------------------------------
@@ -151,88 +158,86 @@ CHỈ TRẢ VỀ JSON — KHÔNG THÊM GIẢI THÍCH
 ---------------------------------------
 `;
 
-  // Gọi AI
-  const result = await this.genAiProModel.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-  });
+    // Gọi AI
+    const result = await this.genAiProModel.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    });
 
-  const rawText = result.response.text();
-  const jsonStart = rawText.indexOf("{");
-  const jsonEnd = rawText.lastIndexOf("}");
-  const jsonString =
-    jsonStart !== -1 && jsonEnd !== -1
-      ? rawText.slice(jsonStart, jsonEnd + 1)
-      : rawText;
+    const rawText = result.response.text();
+    const jsonStart = rawText.indexOf("{");
+    const jsonEnd = rawText.lastIndexOf("}");
+    const jsonString =
+      jsonStart !== -1 && jsonEnd !== -1
+        ? rawText.slice(jsonStart, jsonEnd + 1)
+        : rawText;
 
-  let parsedData: any;
-  try {
-    parsedData = JSON.parse(jsonString);
-  } catch (error) {
-    console.error("JSON parse lỗi:", error, rawText);
-    throw new BadRequestException("AI trả về dữ liệu không hợp lệ");
-  }
+    let parsedData: any;
+    try {
+      parsedData = JSON.parse(jsonString);
+    } catch (error) {
+      console.error("JSON parse lỗi:", error, rawText);
+      throw new BadRequestException("AI trả về dữ liệu không hợp lệ");
+    }
 
-  const { learningPath, learningSteps, learningTasks } = parsedData;
+    const { learningPath, learningSteps, learningTasks } = parsedData;
 
-  // Tạo learningPath
-  const createdPath = await this.learningPathModel.create({
-    ...learningPath,
-    steps: [],
-    userId: user._id,
-    survey: newSurvey._id,
-  });
-
-  // Tạo Steps
-  const createdSteps = await this.learningStepModel.insertMany(
-    learningSteps.map((s: any, idx: number) => ({
-      ...s,
-      unlockAt: s.unlockAt || new Date(Date.now() + idx * 24 * 60 * 60 * 1000),
-      tasks: [],
-    }))
-  );
-
-  // Tạo Tasks — CHỈ GIỮ content AS-IS (MẢNG)
-  const createdTasks = await this.learningTaskModel.insertMany(
-    learningTasks.map((t: any) => ({
-      ...t,
-      content: Array.isArray(t.content) ? t.content : [],
-    }))
-  );
-
-  // Gán task vào step
-  for (const step of createdSteps) {
-    const tasksForStep = createdTasks.filter(
-      (t) => t.relatedStep === step.order
-    );
-    step.tasks = tasksForStep.map((t) => t._id);
-    await step.save();
-  }
-
-  // Gán steps vào path
-  createdPath.steps = createdSteps.map((s) => s._id);
-  await createdPath.save();
-
-  // Tạo UserTaskProgress
-  await this.userTaskProgressModel.insertMany(
-    createdTasks.map((task: any) => ({
+    // Tạo learningPath
+    const createdPath = await this.learningPathModel.create({
+      ...learningPath,
+      steps: [],
       userId: user._id,
-      taskId: task._id,
-      completed: false,
-      submittedAt: null,
-      score: 0,
-      feedback: "",
-    }))
-  );
+      survey: newSurvey._id,
+    });
 
-  return {
-    survey: newSurvey,
-    learningPath: createdPath,
-    learningSteps: createdSteps,
-    learningTasks: createdTasks,
-  };
-}
+    // Tạo Steps
+    const createdSteps = await this.learningStepModel.insertMany(
+      learningSteps.map((s: any, idx: number) => ({
+        ...s,
+        unlockAt: new Date(Date.now() + idx * 24 * 60 * 60 * 1000),
+        tasks: [],
+      }))
+    );
 
+    // Tạo Tasks — CHỈ GIỮ content AS-IS (MẢNG)
+    const createdTasks = await this.learningTaskModel.insertMany(
+      learningTasks.map((t: any) => ({
+        ...t,
+        content: Array.isArray(t.content) ? t.content : [],
+      }))
+    );
 
+    // Gán task vào step
+    for (const step of createdSteps) {
+      const tasksForStep = createdTasks.filter(
+        (t) => t.relatedStep === step.order
+      );
+      step.tasks = tasksForStep.map((t) => t._id);
+      await step.save();
+    }
+
+    // Gán steps vào path
+    createdPath.steps = createdSteps.map((s) => s._id);
+    await createdPath.save();
+
+    // Tạo UserTaskProgress
+    await this.userTaskProgressModel.insertMany(
+      createdTasks.map((task: any) => ({
+        userId: user._id,
+        taskId: task._id,
+        completed: false,
+        submittedAt: null,
+        score: 0,
+        feedback: "",
+      }))
+    );
+
+    return {
+      survey: newSurvey,
+      learningPath: createdPath,
+      learningSteps: createdSteps,
+      learningTasks: createdTasks,
+    };
+  }
 
 
 
