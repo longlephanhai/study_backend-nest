@@ -35,6 +35,9 @@ export class ExamResultService {
 
 
   async create(createExamResultDto: CreateExamResultDto, user: IUser) {
+    if (createExamResultDto) {
+
+    }
     const createdExamResult = new this.examResultModel({
       ...createExamResultDto,
       totalScore: listeningScoreMap[createExamResultDto.totalListeningCorrect] + readingScoreMap[createExamResultDto.totalReadingCorrect],
@@ -71,8 +74,6 @@ export class ExamResultService {
     const wrongAnswer = await getQuestionsData(examResult.wrongAnswer);
     const noAnswer = await getQuestionsData(examResult.noAnswer);
 
-
-
     return {
       totalCorrect: examResult.totalCorrect,
       totalListeningCorrect: examResult.totalListeningCorrect,
@@ -88,7 +89,10 @@ export class ExamResultService {
   }
 
   async getHistoryExamResults(user: IUser) {
-    return this.examResultModel.find({ userId: user._id }).select('totalScore readingScore listeningScore totalCorrect totalListeningCorrect totalReadingCorrect parts createdAt').sort({ createdAt: -1 });
+    return await this.examResultModel.find({
+      userId: user._id,
+    })
+      .select('testId totalScore readingScore listeningScore totalCorrect totalListeningCorrect totalReadingCorrect parts createdAt').sort({ createdAt: -1 });
   }
 
   async getPartCorrectCount(part: IPart) {
@@ -209,7 +213,10 @@ Lưu ý quan trọng:
 
   async getPredictedExamResults(user: IUser) {
     const examResults = await this.examResultModel
-      .find({ userId: user._id })
+      .find({
+        userId: user._id,
+        parts: { $size: 7 }
+      })
       .select('totalListeningCorrect totalReadingCorrect noAnswer parts createdAt totalCorrect readingScore listeningScore targetScore')
       .sort({ createdAt: 1 })
       .lean();

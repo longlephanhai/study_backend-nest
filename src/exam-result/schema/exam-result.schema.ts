@@ -23,7 +23,7 @@ export class ExamResult {
   @Prop({ required: true })
   totalReadingCorrect: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type:[mongoose.Schema.Types.ObjectId], ref: Part.name })
   parts: Part[];
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Question.name, default: [] })

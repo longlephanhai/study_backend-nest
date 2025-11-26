@@ -74,30 +74,6 @@ export class FlashCardService {
     });
   }
 
-  //   [
-  //   {
-  //     _id: '6924b1f66dc3d195041b8564',
-  //     vocabulary: 'tuwf bngfw1',
-  //     meaning: 'ưqe',
-  //     example: 'ưqewq',
-  //     pronunciation: 'ưqewq',
-  //     __v: 0,
-  //     createdAt: '2025-11-24T19:28:54.889Z',
-  //     updatedAt: '2025-11-24T19:28:54.889Z'
-  //   },
-  //   {
-  //     vocabulary: 'dqw',
-  //     meaning: 'dwqdwq',
-  //     example: 'dwqdwq',
-  //     pronunciation: 'dwqdwqd'
-  //   },
-  //   {
-  //     vocabulary: 'dwq',
-  //     meaning: 'dwqd',
-  //     pronunciation: 'wqdwq',
-  //     example: 'dwqd'
-  //   }
-  // ]
 
   async updateVocabularies(id: string, updateVocabulariesFlashCardDto: UpdateVocabulariesFlashCardDto[]) {
     const flashCard = await this.flashCardModel.findById(id);
