@@ -80,7 +80,7 @@ Guidelines:
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      console.warn("⚠️ AI output not valid JSON, returning raw text.");
+      console.warn("AI output not valid JSON, returning raw text.");
       return { overallFeedback: rawText };
     }
   }

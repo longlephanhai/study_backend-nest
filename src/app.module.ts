@@ -36,6 +36,7 @@ import { Part6Module } from './part6/part6.module';
 import { Part7Module } from './part7/part7.module';
 import { FlashCardModule } from './flash-card/flash-card.module';
 import { VocabulariesFlashCardModule } from './vocabularies-flash-card/vocabularies-flash-card.module';
+import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
 
 
 @Module({
@@ -82,7 +83,8 @@ import { VocabulariesFlashCardModule } from './vocabularies-flash-card/vocabular
     Part6Module,
     Part7Module,
     FlashCardModule,
-    VocabulariesFlashCardModule
+    VocabulariesFlashCardModule,
+    AiAssistantModule
   ],
   controllers: [AppController],
   providers: [AppService],
