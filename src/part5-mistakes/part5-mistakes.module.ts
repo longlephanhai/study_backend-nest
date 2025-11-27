@@ -12,17 +12,21 @@ import { Part7, Part7Schema } from 'src/part7/schema/part7.schema';
 import { Part7Module } from 'src/part7/part7.module';
 import { Part4, Part4Schema } from 'src/part4/schema/part4.schema';
 import { Part4Module } from 'src/part4/part4.module';
+import { Part3, Part3Schema } from 'src/part3/schema/part3.schema';
+import { Part3Module } from 'src/part3/part3.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ExamResult.name, schema: ExamResultSchema },
       { name: Question.name, schema: QuestionSchema },
+      { name: Part3.name, schema: Part3Schema },
       { name: Part4.name, schema: Part4Schema },
       { name: Part5.name, schema: Part5Schema },
       { name: Part6.name, schema: Part6Schema },
       { name: Part7.name, schema: Part7Schema },
     ]),
+    Part3Module,
     Part4Module,
     Part5Module,
     Part6Module,
