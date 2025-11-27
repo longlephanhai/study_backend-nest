@@ -7,6 +7,12 @@ import { ResponseMessage, User } from 'src/decorator/customize';
 export class Part5MistakesController {
   constructor(private readonly part5MistakesService: Part5MistakesService) { }
 
+  @Post('generate-part1-mistakes')
+  @ResponseMessage('Generate questions successfully')
+  generateTextPart1(@Body('numQuestions') numQuestions: number, @User() user: IUser) {
+    return this.part5MistakesService.generatePart1Mistakes(numQuestions, user);
+  }
+
   @Post('generate-part2-mistakes')
   @ResponseMessage('Generate questions successfully')
   generateTextPart2(@Body('numQuestions') numQuestions: number, @User() user: IUser) {

@@ -15,6 +15,8 @@ import { Part3 } from 'src/part3/schema/part3.schema';
 import { Part3Service } from 'src/part3/part3.service';
 import { Part2 } from 'src/part2/schema/part2.schema';
 import { Part2Service } from 'src/part2/part2.service';
+import { Part1 } from 'src/part1/schema/part1.schema';
+import { Part1Service } from 'src/part1/part1.service';
 
 @Injectable()
 export class Part5MistakesService {
@@ -24,11 +26,13 @@ export class Part5MistakesService {
   constructor(
     @InjectModel(ExamResult.name) private examResultModel: Model<ExamResult>,
     @InjectModel(Question.name) private questionModel: Model<Question>,
+    @InjectModel(Part1.name) private part1Model: Model<Part1>,
     @InjectModel(Part2.name) private part2Model: Model<Part2>,
     @InjectModel(Part3.name) private part3Model: Model<Part3>,
     @InjectModel(Part4.name) private part4Model: Model<Part4>,
     @InjectModel(Part5.name) private part5Model: Model<Part5>,
     private configService: ConfigService,
+    private readonly part1Service: Part1Service,
     private readonly part2Service: Part2Service,
     private readonly part3Service: Part3Service,
     private readonly part4Service: Part4Service,
@@ -39,6 +43,102 @@ export class Part5MistakesService {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
     this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
   }
+
+  async generatePart1Mistakes(numQuestions: number, user: IUser) {
+    const examResults = await this.examResultModel
+      .find({ userId: user._id })
+      .sort({ createdAt: -1 });
+
+    if (!examResults || examResults.length === 0) {
+      throw new BadRequestException('No exam result found for the user');
+    }
+
+    const wrongAnswerIds = examResults.map(r => r.wrongAnswer).flat();
+    const wrongQuestions = await this.questionModel.find({
+      _id: { $in: wrongAnswerIds }
+    });
+
+    const questions1to6 = wrongQuestions.filter(
+      q => q.numberQuestion >= 1 && q.numberQuestion <= 6
+    );
+
+    const categoryMistakeCount: Record<string, number> = {};
+    questions1to6.forEach(q => {
+      if (q.category) {
+        categoryMistakeCount[q.category] =
+          (categoryMistakeCount[q.category] || 0) + 1;
+      }
+    });
+
+    const questionsPart1 = await this.part1Service.findAll();
+
+    const prompt = `
+Bạn là một chuyên gia TOEIC.
+
+Dưới đây là thống kê số lỗi của người học theo từng chủ điểm:
+${JSON.stringify(categoryMistakeCount, null, 2)}
+
+Và đây là danh sách toàn bộ câu hỏi Part 1 trong cơ sở dữ liệu (gồm id và category):
+${JSON.stringify(
+      questionsPart1.map(q => ({ id: q._id, category: q.category })),
+      null,
+      2
+    )}
+
+Hãy CHỌN ra đúng ${numQuestions} câu hỏi phù hợp nhất để người học ôn tập lại.
+Yêu cầu:
+- Ưu tiên các category mà người học sai nhiều nhất.
+- Phân bổ theo tỉ lệ lỗi.
+- Nếu category không đủ câu thì lấy ở category sai nhiều tiếp theo.
+- Chỉ TRẢ VỀ một mảng JSON **chỉ gồm id**, ví dụ:
+[
+  { "id": "650fa3..." },
+  { "id": "6510bc..." }
+]
+- Không trả về nội dung câu hỏi, không giải thích, không thêm text khác.
+- Chỉ trả về JSON array hợp lệ.
+`;
+
+    const result = await this.genAiProModel.generateContent({
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.1,
+        maxOutputTokens: 1200,
+      },
+    });
+
+    const rawText = result.response.text();
+
+
+    const jsonStart = rawText.indexOf("[");
+    const jsonEnd = rawText.lastIndexOf("]");
+    const jsonString =
+      jsonStart !== -1 && jsonEnd !== -1
+        ? rawText.slice(jsonStart, jsonEnd + 1)
+        : rawText;
+
+    let selectedIds: string[] = [];
+
+    try {
+      const parsed = JSON.parse(jsonString);
+      selectedIds = parsed.map((item: any) => item.id);
+    } catch (e) {
+      console.warn("AI output invalid JSON:", rawText);
+      return [];
+    }
+
+    const finalQuestions = await this.part1Model.find({
+      _id: { $in: selectedIds }
+    });
+
+    return finalQuestions;
+  }
+
   async generatePart2Mistakes(numQuestions: number, user: IUser) {
     const examResults = await this.examResultModel
       .find({ userId: user._id })
@@ -222,7 +322,7 @@ Yêu cầu:
       return [];
     }
 
-    const finalQuestions = await this.part2Model.find({
+    const finalQuestions = await this.part3Model.find({
       _id: { $in: selectedIds }
     });
 

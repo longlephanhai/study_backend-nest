@@ -16,12 +16,15 @@ import { Part3, Part3Schema } from 'src/part3/schema/part3.schema';
 import { Part3Module } from 'src/part3/part3.module';
 import { Part2, Part2Schema } from 'src/part2/schema/part2.schema';
 import { Part2Module } from 'src/part2/part2.module';
+import { Part1, Part1Schema } from 'src/part1/schema/part1.schema';
+import { Part1Module } from 'src/part1/part1.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ExamResult.name, schema: ExamResultSchema },
       { name: Question.name, schema: QuestionSchema },
+      { name: Part1.name, schema: Part1Schema },
       { name: Part2.name, schema: Part2Schema },
       { name: Part3.name, schema: Part3Schema },
       { name: Part4.name, schema: Part4Schema },
@@ -29,6 +32,7 @@ import { Part2Module } from 'src/part2/part2.module';
       { name: Part6.name, schema: Part6Schema },
       { name: Part7.name, schema: Part7Schema },
     ]),
+    Part1Module,
     Part2Module,
     Part3Module,
     Part4Module,
