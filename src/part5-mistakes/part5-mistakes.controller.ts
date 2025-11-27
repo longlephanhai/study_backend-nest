@@ -9,8 +9,14 @@ export class Part5MistakesController {
 
   @Post('generate-part5-mistakes')
   @ResponseMessage('Generate questions successfully')
-  generateText(@Body('numQuestions') numQuestions: number, @User() user: IUser) {
+  generateTextPart5(@Body('numQuestions') numQuestions: number, @User() user: IUser) {
     return this.part5MistakesService.generatePart5Mistakes(numQuestions, user);
+  }
+
+  @Post('generate-part6-mistakes')
+  @ResponseMessage('Generate questions successfully')
+  generateTextPart6(@Body('numQuestions') numQuestions: number, @User() user: IUser) {
+    return this.part5MistakesService.generatePart6Mistakes(numQuestions, user);
   }
 
   @Get()
