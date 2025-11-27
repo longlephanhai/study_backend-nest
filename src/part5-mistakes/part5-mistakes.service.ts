@@ -9,6 +9,8 @@ import { Part5Service } from 'src/part5/part5.service';
 import { Part5 } from 'src/part5/schema/part5.schema';
 import { Part6Service } from 'src/part6/part6.service';
 import { Part6 } from 'src/part6/schema/part6.schema';
+import { Part7 } from 'src/part7/schema/part7.schema';
+import { Part7Service } from 'src/part7/part7.service';
 
 @Injectable()
 export class Part5MistakesService {
@@ -20,9 +22,11 @@ export class Part5MistakesService {
     @InjectModel(Question.name) private questionModel: Model<Question>,
     @InjectModel(Part5.name) private part5Model: Model<Part5>,
     @InjectModel(Part6.name) private part6Model: Model<Part6>,
+    @InjectModel(Part7.name) private part7Model: Model<Part7>,
     private configService: ConfigService,
     private readonly part5Service: Part5Service,
     private readonly part6Service: Part6Service,
+    private readonly part7Service: Part7Service,
   ) {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
     this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
@@ -151,7 +155,6 @@ Yêu cầu:
 
     const questionsPart6 = await this.part6Service.findAll();
 
-    // gửi data và thống kê lỗi cho AI chọn các id
     const prompt = `
 Bạn là một chuyên gia TOEIC.
 Người học có số lỗi theo từng category như sau:
@@ -191,7 +194,6 @@ Hãy chọn ra ${numQuestions} câu phù hợp để người học ôn tập l�
       return [];
     }
 
-    // Nhóm tất cả câu theo questionContent (passage)
     const passageMap: Record<string, any[]> = {};
     questionsPart6.forEach(q => {
       const key = q.questionContent;
@@ -199,16 +201,99 @@ Hãy chọn ra ${numQuestions} câu phù hợp để người học ôn tập l�
       passageMap[key].push(q);
     });
 
-    // Lấy tất cả passage chứa các id AI chọn
     const selectedPassages = Object.values(passageMap).filter(p =>
       p.some(q => selectedIds.includes(q._id.toString()))
     );
 
-    // flatten các câu trong passage đã chọn
     const finalQuestions = selectedPassages.flat();
 
     return finalQuestions;
   }
+
+  async generatePart7Mistakes(numQuestions: number, user: IUser) {
+    const examResults = await this.examResultModel
+      .find({ userId: user._id })
+      .sort({ createdAt: -1 });
+
+    if (!examResults || examResults.length === 0) {
+      throw new BadRequestException('No exam result found for the user');
+    }
+
+    const wrongAnswerIds = examResults.map(r => r.wrongAnswer).flat();
+    const wrongQuestions = await this.questionModel.find({
+      _id: { $in: wrongAnswerIds }
+    });
+
+    const questions147to200 = wrongQuestions.filter(
+      q => q.numberQuestion >= 147 && q.numberQuestion <= 200
+    );
+
+    const categoryMistakeCount: Record<string, number> = {};
+    questions147to200.forEach(q => {
+      if (q.category) {
+        categoryMistakeCount[q.category] =
+          (categoryMistakeCount[q.category] || 0) + 1;
+      }
+    });
+
+    const questionsPart7 = await this.part7Service.findAll();
+
+
+    const prompt = `
+Bạn là một chuyên gia TOEIC.
+Người học có số lỗi theo từng category như sau:
+${JSON.stringify(categoryMistakeCount, null, 2)}
+
+Danh sách các câu Part7 trong DB (id + category):
+${JSON.stringify(
+      questionsPart7.map(q => ({ id: q._id, category: q.category })),
+      null,
+      2
+    )}
+
+Hãy chọn ra ${numQuestions} câu phù hợp để người học ôn tập lại.
+- Ưu tiên category người học sai nhiều nhất.
+- Trả về **mảng JSON chỉ gồm id**, ví dụ: [{ "id": "..." }, ...]
+- Không trả về nội dung câu hỏi, giải thích hay text khác.
+`;
+
+    const result = await this.genAiProModel.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 1200 },
+    });
+
+    const rawText = result.response.text();
+    const jsonStart = rawText.indexOf('[');
+    const jsonEnd = rawText.lastIndexOf(']');
+    const jsonString = jsonStart !== -1 && jsonEnd !== -1
+      ? rawText.slice(jsonStart, jsonEnd + 1)
+      : rawText;
+
+    let selectedIds: string[] = [];
+    try {
+      const parsed = JSON.parse(jsonString);
+      selectedIds = parsed.map((item: any) => item.id);
+    } catch (e) {
+      console.warn('AI output invalid JSON:', rawText);
+      return [];
+    }
+
+    const passageMap: Record<string, typeof questionsPart7> = {};
+    questionsPart7.forEach(q => {
+      const key = q.reading?.join('|') || q._id.toString();
+      if (!passageMap[key]) passageMap[key] = [];
+      passageMap[key].push(q);
+    });
+
+    const selectedPassages = Object.values(passageMap).filter(p =>
+      p.some(q => selectedIds.includes(q._id.toString()))
+    );
+
+    const finalPassages = selectedPassages.flat()
+
+    return finalPassages;
+  }
+
 
 
 

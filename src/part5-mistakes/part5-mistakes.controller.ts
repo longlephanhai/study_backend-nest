@@ -19,6 +19,12 @@ export class Part5MistakesController {
     return this.part5MistakesService.generatePart6Mistakes(numQuestions, user);
   }
 
+  @Post('generate-part7-mistakes')
+  @ResponseMessage('Generate questions successfully')
+  generateTextPart7(@Body('numQuestions') numQuestions: number, @User() user: IUser) {
+    return this.part5MistakesService.generatePart7Mistakes(numQuestions, user);
+  }
+
   @Get()
   @ResponseMessage('Get all mistakes successfully')
   getAllMistakes(@User() user: IUser) {

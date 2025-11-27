@@ -8,6 +8,8 @@ import { Part5Module } from 'src/part5/part5.module';
 import { Part5, Part5Schema } from 'src/part5/schema/part5.schema';
 import { Part6, Part6Schema } from 'src/part6/schema/part6.schema';
 import { Part6Module } from 'src/part6/part6.module';
+import { Part7, Part7Schema } from 'src/part7/schema/part7.schema';
+import { Part7Module } from 'src/part7/part7.module';
 
 @Module({
   imports: [
@@ -16,9 +18,11 @@ import { Part6Module } from 'src/part6/part6.module';
       { name: Question.name, schema: QuestionSchema },
       { name: Part5.name, schema: Part5Schema },
       { name: Part6.name, schema: Part6Schema },
+      { name: Part7.name, schema: Part7Schema },
     ]),
     Part5Module,
     Part6Module,
+    Part7Module
   ],
   controllers: [Part5MistakesController],
   providers: [Part5MistakesService],
