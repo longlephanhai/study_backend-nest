@@ -43,7 +43,7 @@ export class SurveysService {
     private readonly grammarsService: GrammarsService,
   ) {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
-    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
   }
 
   async create(createSurveyDto: CreateSurveyDto, @User() user: IUser) {

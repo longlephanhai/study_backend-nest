@@ -21,7 +21,7 @@ export class TopicsVocabulariesService {
     private configService: ConfigService
   ) {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
-    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
   }
   create(createTopicsVocabularyDto: CreateTopicsVocabularyDto) {
     return 'This action adds a new topicsVocabulary';

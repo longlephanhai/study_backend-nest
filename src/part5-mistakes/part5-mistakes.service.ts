@@ -41,7 +41,7 @@ export class Part5MistakesService {
     private readonly part7Service: Part7Service,
   ) {
     this.genAI = new GoogleGenerativeAI(this.configService.get<string>('API_GEMINI_KEY')!);
-    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    this.genAiProModel = this.genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
   }
 
   async generatePart1Mistakes(numQuestions: number, user: IUser) {

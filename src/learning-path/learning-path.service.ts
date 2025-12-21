@@ -38,7 +38,7 @@ export class LearningPathService {
     });
 
     if (learningPaths.length === 0) {
-      return false;
+      return [];
     }
 
     return learningPaths;
