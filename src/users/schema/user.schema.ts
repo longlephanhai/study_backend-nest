@@ -35,6 +35,9 @@ export class User {
   targetScore: number;
 
   @Prop()
+  refreshToken: string;
+
+  @Prop()
   createdAt: Date;
 
   @Prop()

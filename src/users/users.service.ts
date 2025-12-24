@@ -90,6 +90,14 @@ export class UsersService {
     }
   }
 
+  async updateUserToken(refreshToken: string, _id: string) {
+    return this.userModel.updateOne({
+      _id: _id
+    }, {
+      refreshToken: refreshToken
+    })
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
@@ -101,4 +109,7 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+
+
 }

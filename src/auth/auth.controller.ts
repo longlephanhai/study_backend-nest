@@ -1,9 +1,10 @@
-import { Body, Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
+import { Body, Controller, Request, Post, UseGuards, Get, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import type { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +23,8 @@ export class AuthController {
   @Public()
   @ResponseMessage('User logged in successfully')
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Res({ passthrough: true }) response: Response) {
+    return this.authService.login(req.user, response);
   }
 
   @Get('account')
@@ -36,6 +37,13 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Post('logout')
+  @ResponseMessage('User logged out successfully')
+  logout(@Res({ passthrough: true }) response: Response,
+        @User() user: IUser,) {
+    return this.authService.logout(response, user);
   }
 
 }
