@@ -3,7 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Role } from './schema/role.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import aqp from 'api-query-params';
 
 @Injectable()
@@ -58,8 +58,16 @@ export class RolesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`id không hợp lệ`)
+    }
+    return await this.roleModel.findById(id)
+      .populate({
+        path: 'permissions',
+        select: { _id: 1, apiPath: 1, name: 1, method: 1, module: 1 }
+      })
+
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto, user: IUser) {

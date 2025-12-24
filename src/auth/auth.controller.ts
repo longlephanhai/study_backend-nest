@@ -1,10 +1,10 @@
-import { Body, Controller, Request, Post, UseGuards, Get, Res } from '@nestjs/common';
+import { Body, Controller, Request, Post, UseGuards, Get, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import type { Response } from 'express';
+import type { Request as RQ, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -39,10 +39,18 @@ export class AuthController {
     return req.user;
   }
 
+  @Public()
+  @ResponseMessage('Get user by refresh token')
+  @Get("/refresh")
+  refreshToken(@Req() request: RQ, @Res({ passthrough: true }) response: Response) {
+    const refreshToken = request.cookies["token"];
+    return this.authService.refreshToken(refreshToken, response);
+  }
+
   @Post('logout')
   @ResponseMessage('User logged out successfully')
   logout(@Res({ passthrough: true }) response: Response,
-        @User() user: IUser,) {
+    @User() user: IUser,) {
     return this.authService.logout(response, user);
   }
 

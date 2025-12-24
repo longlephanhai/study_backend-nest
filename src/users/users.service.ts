@@ -110,6 +110,12 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
+  findUserByRefreshToken(refreshToken: string) {
+    return this.userModel.findOne({ refreshToken: refreshToken }).populate({
+      path: "role",
+      select: { name: 1 }
+    });
+  }
 
 
 }
